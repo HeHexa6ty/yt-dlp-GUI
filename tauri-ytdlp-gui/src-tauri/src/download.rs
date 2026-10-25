@@ -3,7 +3,7 @@ use std::process::Stdio;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use tauri::{AppHandle, Emitter};
+use tauri::{AppHandle, Emitter, Runtime};
 use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::process::Command;
 
@@ -296,12 +296,18 @@ fn map_ytdlp_stderr(stderr: &str) -> AppError {
         return AppError::new("login-required", ACCOUNT_REQUIRED_MESSAGE);
     }
 
+    // Some X videos are silent. yt-dlp's ffprobe warning is accurate but not
+    // something a user should have to decode.
+    if message.contains("unable to obtain file audio codec with ffprobe") {
+        return AppError::new("no-audio", "This video has no audio track to extract.");
+    }
+
     AppError::new("download-failed", message)
 }
 
 /// Runs yt-dlp while streaming progress events to the frontend.
-async fn run_with_progress(
-    app: &AppHandle,
+async fn run_with_progress<R: Runtime>(
+    app: &AppHandle<R>,
     mut command: Command,
     id: &str,
 ) -> Result<(), AppError> {
@@ -363,8 +369,8 @@ async fn run_with_progress(
 }
 
 /// Downloads directly into `directory`, letting yt-dlp pick the extension.
-async fn run_download(
-    app: &AppHandle,
+async fn run_download<R: Runtime>(
+    app: &AppHandle<R>,
     request: &DownloadRequest,
     output_base: &str,
     directory: &Path,
@@ -386,8 +392,8 @@ async fn run_download(
 }
 
 /// Downloads into a scratch folder; used as the input for FFmpeg conversions.
-async fn run_download_temp(
-    app: &AppHandle,
+async fn run_download_temp<R: Runtime>(
+    app: &AppHandle<R>,
     request: &DownloadRequest,
     output_base: &str,
     temp: &Path,
@@ -404,6 +410,30 @@ async fn run_download_temp(
     );
     command.arg("-o").arg(template);
     command.arg(&request.url);
+
+    run_with_progress(app, command, id).await?;
+
+    first_file(temp)
+}
+
+/// Downloads a direct media URL into a scratch folder. Used for X animated GIFs
+/// when yt-dlp cannot extract the post itself.
+async fn run_download_temp_url<R: Runtime>(
+    app: &AppHandle<R>,
+    url: &str,
+    output_base: &str,
+    temp: &Path,
+    id: &str,
+) -> Result<PathBuf, AppError> {
+    let mut command = ytdlp_command();
+    command.args(base_args());
+
+    let template = format!(
+        "{}.%(ext)s",
+        escape_template(&temp.join(output_base).to_string_lossy())
+    );
+    command.arg("-o").arg(template);
+    command.arg(url);
 
     run_with_progress(app, command, id).await?;
 
@@ -438,8 +468,8 @@ fn image_output_template(temp: &Path) -> String {
 }
 
 /// Downloads every image (or thumbnail) of a post into a scratch folder.
-async fn run_download_temp_images(
-    app: &AppHandle,
+async fn run_download_temp_images<R: Runtime>(
+    app: &AppHandle<R>,
     request: &DownloadRequest,
     temp: &Path,
     id: &str,
@@ -459,8 +489,8 @@ async fn run_download_temp_images(
 /// Fetches and downloads every photo of an X post. yt-dlp exposes no format for
 /// photos, so the image URLs come from the post's syndication data and are
 /// fetched as plain direct links.
-async fn run_download_temp_x_photos(
-    app: &AppHandle,
+async fn run_download_temp_x_photos<R: Runtime>(
+    app: &AppHandle<R>,
     url: &str,
     temp: &Path,
     id: &str,
@@ -671,8 +701,8 @@ fn converting_progress(id: &str) -> DownloadProgress {
 /// Downloads every image of a post, converts each one, then moves the results
 /// into the destination. File conflicts are checked once the real item count is
 /// known, so a carousel is always treated as a single set.
-async fn download_image_set(
-    app: &AppHandle,
+async fn download_image_set<R: Runtime>(
+    app: &AppHandle<R>,
     request: &DownloadRequest,
     platform: &str,
     directory: &Path,
@@ -720,12 +750,24 @@ async fn download_image_set(
 }
 
 /// Full download pipeline: resolve the target, download, convert, report.
-pub async fn download(
-    app: &AppHandle,
+pub async fn download<R: Runtime>(
+    app: &AppHandle<R>,
     request: DownloadRequest,
 ) -> Result<DownloadResult, AppError> {
     let target = parse_supported_url(&request.url)?;
     let platform = target.platform;
+
+    // Some X animated GIF posts are not extractable by yt-dlp. FxTwitter exposes
+    // the MP4 X serves for them, which can be downloaded directly and converted.
+    // Only GIF sources take this path; photo posts still use the image pipeline.
+    let direct_gif = if platform == "X"
+        && request.format == OutputFormat::Gif
+        && request.media_type == MediaType::Gif
+    {
+        x_api::fetch_gif(&request.url).await.ok().flatten()
+    } else {
+        None
+    };
 
     // YouTube only exposes videos and audio, so GIF output is not offered.
     if platform == "YouTube" && request.format == OutputFormat::Gif {
@@ -786,7 +828,11 @@ pub async fn download(
             let (final_path, output_base) =
                 resolve_output(&directory, &base, request.format.extension(), conflict)?;
             let temp = make_temp_dir(&id)?;
-            let source = run_download_temp(app, &request, &output_base, &temp, &id).await?;
+            let source = if let Some(gif) = direct_gif.as_ref() {
+                run_download_temp_url(app, &gif.url, &output_base, &temp, &id).await?
+            } else {
+                run_download_temp(app, &request, &output_base, &temp, &id).await?
+            };
             let _ = app.emit(PROGRESS_EVENT, converting_progress(&id));
             let quality = request.gif_quality.unwrap_or(GifQuality::Better);
             convert_gif(&source, &final_path, quality).await?;
@@ -808,6 +854,16 @@ pub async fn download(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// A unique scratch folder per test. `timestamp_id` alone can collide when
+    /// tests start in the same millisecond and run in parallel.
+    fn test_temp_dir() -> PathBuf {
+        use std::sync::atomic::{AtomicU64, Ordering};
+        static NEXT: AtomicU64 = AtomicU64::new(0);
+
+        let unique = NEXT.fetch_add(1, Ordering::Relaxed);
+        std::env::temp_dir().join(format!("yt-dlp-gui-test-{}-{unique}", timestamp_id()))
+    }
 
     #[test]
     fn sanitize_replaces_illegal_characters_and_collapses_space() {
@@ -861,7 +917,7 @@ mod tests {
 
     #[test]
     fn reports_existing_files_and_finds_a_free_rename() {
-        let dir = std::env::temp_dir().join(format!("yt-dlp-gui-test-{}", timestamp_id()));
+        let dir = test_temp_dir();
         std::fs::create_dir_all(&dir).expect("temp dir should be created");
 
         // No file yet: the base name is used unchanged.
@@ -905,7 +961,7 @@ mod tests {
 
     #[test]
     fn resolves_one_numbered_name_per_carousel_item() {
-        let dir = std::env::temp_dir().join(format!("yt-dlp-gui-test-{}", timestamp_id()));
+        let dir = test_temp_dir();
         std::fs::create_dir_all(&dir).expect("temp dir should be created");
 
         let paths =
@@ -938,6 +994,16 @@ mod tests {
         );
 
         let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn maps_a_silent_video_to_a_clear_message() {
+        let error = map_ytdlp_stderr(
+            "ERROR: Postprocessing: WARNING: unable to obtain file audio codec with ffprobe",
+        );
+
+        assert_eq!(error.code, "no-audio");
+        assert_eq!(error.message, "This video has no audio track to extract.");
     }
 
     #[test]

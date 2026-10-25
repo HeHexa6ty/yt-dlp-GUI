@@ -4,6 +4,8 @@ mod download;
 mod error;
 mod models;
 mod paths;
+#[cfg(test)]
+mod test_set;
 mod x_api;
 mod ytdlp;
 

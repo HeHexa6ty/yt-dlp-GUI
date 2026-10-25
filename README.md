@@ -89,6 +89,12 @@ npm run tauri build
 
 Builds are platform-specific and require the appropriate toolchain and dependencies.
 
+### How to run tests
+
+```cd tauri-ytdlp-gui/src-tauri
+cargo test --lib verify_test_set -- --ignored --nocapture
+```
+
 ## Project Structure
 
 ```text

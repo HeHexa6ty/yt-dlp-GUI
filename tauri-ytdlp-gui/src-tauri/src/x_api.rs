@@ -18,8 +18,9 @@ const SYNDICATION_TOKEN: &str = "ytdlp-gui";
 
 /// Older or restricted posts come back from the syndication endpoint as a
 /// `TweetTombstone`, even when the post itself is still viewable. FxTwitter
-/// mirrors the public post metadata (including every photo), so it is used only
-/// as a fallback when the syndication response has no photos to offer.
+/// mirrors the public post metadata (including every photo and animated GIF),
+/// so it is used as a fallback when the syndication response has no media to
+/// offer.
 const FXTWITTER_ENDPOINT: &str = "https://api.fxtwitter.com";
 
 /// Guard against a hung metadata request; the photo download itself keeps the
@@ -30,6 +31,13 @@ const METADATA_TIMEOUT: Duration = Duration::from_secs(30);
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TweetPhoto {
     pub url: String,
+}
+
+/// One animated GIF attached to a post, pointing at the MP4 X serves for it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TweetGif {
+    pub url: String,
+    pub thumbnail: Option<String>,
 }
 
 /// A single entry of the syndication response's `mediaDetails` list.
@@ -74,14 +82,17 @@ struct FxTweet {
 #[derive(Debug, Clone, Default, Deserialize)]
 struct FxMedia {
     #[serde(default)]
-    photos: Vec<FxPhoto>,
+    all: Vec<FxMediaItem>,
+    #[serde(default)]
+    photos: Vec<FxMediaItem>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
-struct FxPhoto {
+struct FxMediaItem {
     #[serde(rename = "type")]
     media_type: Option<String>,
     url: Option<String>,
+    thumbnail_url: Option<String>,
 }
 
 /// Pulls the numeric status id out of an X post URL. The extractor's `info.id`
@@ -149,6 +160,29 @@ fn photos_from_fx(response: &FxResponse) -> Vec<TweetPhoto> {
                 .filter_map(|photo| photo.url.as_deref())
                 .map(|url| TweetPhoto {
                     url: original_size_url(url),
+                })
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+/// Keeps animated GIF attachments from FxTwitter's combined media list. X
+/// serves them as MP4 files, but the source type is still GIF.
+fn gifs_from_fx(response: &FxResponse) -> Vec<TweetGif> {
+    response
+        .tweet
+        .as_ref()
+        .and_then(|tweet| tweet.media.as_ref())
+        .map(|media| {
+            media
+                .all
+                .iter()
+                .filter(|item| matches!(item.media_type.as_deref(), Some("gif" | "animated_gif")))
+                .filter_map(|item| {
+                    item.url.as_deref().map(|url| TweetGif {
+                        url: url.to_string(),
+                        thumbnail: item.thumbnail_url.clone(),
+                    })
                 })
                 .collect()
         })
@@ -273,19 +307,32 @@ async fn fetch_syndication_photos(id: &str) -> Result<Option<Vec<TweetPhoto>>, A
     Ok(Some(photos))
 }
 
-/// Fallback for tombstoned posts: FxTwitter still mirrors their media.
-async fn fetch_fxtwitter_photos(id: &str) -> Result<Vec<TweetPhoto>, AppError> {
+/// Fetches and parses the FxTwitter mirror of a post.
+async fn fetch_fxtwitter(id: &str) -> Result<FxResponse, AppError> {
     let endpoint = format!("{FXTWITTER_ENDPOINT}/status/{id}");
     let raw = download_json(&endpoint).await?;
 
-    let response: FxResponse = serde_json::from_str(&raw).map_err(|error| {
+    serde_json::from_str(&raw).map_err(|error| {
         AppError::new(
             "analyze-failed",
             format!("X returned an unexpected response: {error}"),
         )
-    })?;
+    })
+}
 
-    Ok(photos_from_fx(&response))
+/// Fallback for tombstoned posts: FxTwitter still mirrors their photos.
+async fn fetch_fxtwitter_photos(id: &str) -> Result<Vec<TweetPhoto>, AppError> {
+    Ok(photos_from_fx(&fetch_fxtwitter(id).await?))
+}
+
+/// Fetches an X animated GIF as the direct MP4 URL X serves for it. Some GIF
+/// posts are not extractable by yt-dlp, so the download path uses this URL.
+pub async fn fetch_gif(url: &str) -> Result<Option<TweetGif>, AppError> {
+    let id = tweet_id(url)
+        .ok_or_else(|| AppError::new("invalid-url", "That X link has no post id in it."))?;
+
+    let response = fetch_fxtwitter(id).await?;
+    Ok(gifs_from_fx(&response).into_iter().next())
 }
 
 /// Fetches the photos of an X post through the public syndication endpoint,
@@ -416,5 +463,34 @@ mod tests {
         let response: FxResponse = serde_json::from_str(r#"{"code":404,"message":"Not Found"}"#)
             .expect("payload should parse");
         assert!(photos_from_fx(&response).is_empty());
+    }
+
+    #[test]
+    fn reads_animated_gifs_from_the_fallback_payload() {
+        let payload = r#"{
+            "code": 200,
+            "message": "OK",
+            "tweet": {
+                "media": {
+                    "all": [
+                        {"type": "photo", "url": "https://pbs.twimg.com/media/AAA.jpg"},
+                        {
+                            "type": "gif",
+                            "url": "https://video.twimg.com/tweet_video/BBB.mp4",
+                            "thumbnail_url": "https://pbs.twimg.com/tweet_video_thumb/BBB.jpg"
+                        }
+                    ]
+                }
+            }
+        }"#;
+        let response: FxResponse = serde_json::from_str(payload).expect("payload should parse");
+        let gifs = gifs_from_fx(&response);
+
+        assert_eq!(gifs.len(), 1);
+        assert_eq!(gifs[0].url, "https://video.twimg.com/tweet_video/BBB.mp4");
+        assert_eq!(
+            gifs[0].thumbnail.as_deref(),
+            Some("https://pbs.twimg.com/tweet_video_thumb/BBB.jpg")
+        );
     }
 }

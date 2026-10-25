@@ -15,13 +15,23 @@ pub async fn analyze_url(url: String) -> Result<MediaInfo, AppError> {
 
     let mut info = ytdlp::analyze(&target.url).await?;
 
-    // yt-dlp filters photos out of X posts, so a photo-only tweet is analyzed
-    // with no image at all. Fill the preview from X's syndication data instead;
-    // a failure here only costs the preview, not the whole analysis.
-    if target.platform == "X" && info.media_type == MediaType::Image && info.thumbnail.is_none() {
-        if let Ok(photos) = x_api::fetch_photos(&target.url).await {
-            if let Some(photo) = photos.first() {
-                info.thumbnail = Some(photo.url.clone());
+    // yt-dlp filters photos out of X posts and cannot extract some animated GIF
+    // posts, so both can arrive as an image with no formats. Fill the preview
+    // from X's syndication data and promote animated GIFs so the GIF pipeline
+    // runs. A failure here only costs the preview, not the whole analysis.
+    if target.platform == "X" && info.media_type == MediaType::Image {
+        let photos = if info.thumbnail.is_none() {
+            x_api::fetch_photos(&target.url).await.unwrap_or_default()
+        } else {
+            Vec::new()
+        };
+
+        if let Some(photo) = photos.first() {
+            info.thumbnail = Some(photo.url.clone());
+        } else if let Ok(Some(gif)) = x_api::fetch_gif(&target.url).await {
+            info.media_type = MediaType::Gif;
+            if info.thumbnail.is_none() {
+                info.thumbnail = gif.thumbnail;
             }
         }
     }

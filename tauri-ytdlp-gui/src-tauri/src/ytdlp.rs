@@ -21,6 +21,12 @@ pub fn ffmpeg_path() -> String {
     std::env::var("FFMPEG_PATH").unwrap_or_else(|_| "ffmpeg".to_string())
 }
 
+/// Path to ffprobe, honouring the `FFPROBE_PATH` override. It is only used to
+/// fill in missing durations so the GIF length limit can still be applied.
+pub fn ffprobe_path() -> String {
+    std::env::var("FFPROBE_PATH").unwrap_or_else(|_| "ffprobe".to_string())
+}
+
 /// Builds the yt-dlp command. A bundled sidecar or user-configured path can be
 /// added later; for now an env override wins over the system PATH.
 pub(crate) fn ytdlp_command() -> Command {
@@ -35,6 +41,80 @@ pub(crate) fn ffmpeg_command() -> Command {
     let mut command = Command::new(ffmpeg_path());
     command.kill_on_drop(true);
     command
+}
+
+/// Picks a direct media URL that ffprobe can open. Some extractors (Instagram)
+/// leave the top-level `url` empty and only expose per-format URLs.
+fn probe_url(info: &Value) -> Option<String> {
+    if let Some(url) = string_field(info, "url")
+        && url.starts_with("http")
+    {
+        return Some(url);
+    }
+
+    info.get("formats")
+        .and_then(Value::as_array)?
+        .iter()
+        .find_map(|format| {
+            let url = string_field(format, "url")?;
+            let ext = string_field(format, "ext").unwrap_or_default();
+            if url.starts_with("http") && ext != "mhtml" {
+                Some(url)
+            } else {
+                None
+            }
+        })
+}
+
+/// Reads the duration of a remote media URL with ffprobe. Instagram omits the
+/// duration from its yt-dlp JSON, but the GIF limit still needs it. A missing
+/// ffprobe or a failed probe is not fatal; analysis simply keeps duration unset.
+async fn probe_duration(info: &Value) -> Option<f64> {
+    let url = probe_url(info)?;
+    let mut command = Command::new(ffprobe_path());
+    command.kill_on_drop(true);
+    command.args([
+        "-v",
+        "error",
+        "-show_entries",
+        "format=duration",
+        "-of",
+        "default=nw=1:nk=1",
+    ]);
+
+    if let Some(headers) = info.get("http_headers").and_then(Value::as_object) {
+        let mut header_arg = String::new();
+        for (name, value) in headers {
+            if let Some(value) = value.as_str() {
+                header_arg.push_str(name);
+                header_arg.push_str(": ");
+                header_arg.push_str(value);
+                header_arg.push_str("\r\n");
+            }
+        }
+        if !header_arg.is_empty() {
+            command.arg("-headers").arg(header_arg);
+        }
+    }
+
+    command
+        .arg(url)
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null());
+
+    let output = timeout(Duration::from_secs(10), command.output())
+        .await
+        .ok()?
+        .ok()?;
+    if !output.status.success() {
+        return None;
+    }
+
+    String::from_utf8_lossy(&output.stdout)
+        .trim()
+        .parse::<f64>()
+        .ok()
 }
 
 /// Runs `yt-dlp --dump-single-json` and converts the result into `MediaInfo`.
@@ -86,7 +166,12 @@ pub async fn analyze(url: &str) -> Result<MediaInfo, AppError> {
         )
     })?;
 
-    parse_info(&json, url)
+    let mut info = parse_info(&json, url)?;
+    if info.duration.is_none() && info.media_type == MediaType::Video {
+        info.duration = probe_duration(&json).await;
+    }
+
+    Ok(info)
 }
 
 /// Shown when a site only serves a post to a logged-in session (for example an
@@ -177,12 +262,26 @@ fn pick_thumbnail(info: &Value, media_type: MediaType) -> Option<String> {
     })
 }
 
+/// X serves animated GIFs as silent MP4s from `video.twimg.com/tweet_video/`.
+/// yt-dlp reports them without codecs or duration, so without this check they
+/// would fall through to the image fallback.
+fn is_x_animated_gif(info: &Value) -> bool {
+    string_field(info, "extractor")
+        .is_some_and(|extractor| extractor.eq_ignore_ascii_case("twitter"))
+        && string_field(info, "url").is_some_and(|url| url.contains("/tweet_video/"))
+}
+
 /// Decides the source media type from codecs/extensions in the yt-dlp payload.
 fn detect_media_type(info: &Value) -> MediaType {
     let ext = string_field(info, "ext").unwrap_or_default().to_lowercase();
 
     // Animated images are reported as GIF sources.
     if ext == "gif" {
+        return MediaType::Gif;
+    }
+
+    // X animated GIFs are MP4 containers but are still GIF sources.
+    if is_x_animated_gif(info) {
         return MediaType::Gif;
     }
 
@@ -267,5 +366,65 @@ mod tests {
 
         assert_eq!(error.code, "unsupported-url");
         assert_eq!(error.message, "Unsupported URL: https://example.com");
+    }
+
+    #[test]
+    fn picks_a_direct_probe_url() {
+        let info = serde_json::json!({
+            "formats": [
+                {"url": "https://example.com/audio.m4a", "ext": "m4a"},
+                {"url": "https://example.com/video.mp4", "ext": "mp4"}
+            ]
+        });
+        assert_eq!(
+            probe_url(&info).as_deref(),
+            Some("https://example.com/audio.m4a")
+        );
+
+        let with_top_level = serde_json::json!({
+            "url": "https://example.com/top.mp4",
+            "formats": [{"url": "https://example.com/format.mp4", "ext": "mp4"}]
+        });
+        assert_eq!(
+            probe_url(&with_top_level).as_deref(),
+            Some("https://example.com/top.mp4")
+        );
+
+        let storyboard_only = serde_json::json!({
+            "formats": [{"url": "https://example.com/storyboard.mhtml", "ext": "mhtml"}]
+        });
+        assert_eq!(probe_url(&storyboard_only), None);
+    }
+
+    #[test]
+    fn detects_x_animated_gif_as_gif() {
+        let info = serde_json::json!({
+            "extractor": "twitter",
+            "ext": "mp4",
+            "url": "https://video.twimg.com/tweet_video/HVaAzjfaYAAe8x0.mp4",
+            "formats": [{
+                "format_id": "http",
+                "ext": "mp4",
+                "vcodec": null,
+                "acodec": null,
+                "url": "https://video.twimg.com/tweet_video/HVaAzjfaYAAe8x0.mp4"
+            }]
+        });
+
+        assert_eq!(detect_media_type(&info), MediaType::Gif);
+    }
+
+    #[test]
+    fn keeps_x_photo_posts_detected_as_images() {
+        let info = serde_json::json!({
+            "extractor": "twitter",
+            "ext": null,
+            "formats": [],
+            "thumbnails": [{
+                "url": "https://pbs.twimg.com/media/AAA.jpg"
+            }]
+        });
+
+        assert_eq!(detect_media_type(&info), MediaType::Image);
     }
 }

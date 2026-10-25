@@ -27,6 +27,10 @@ url = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
+[dev-dependencies]
+# Enables `tauri::test::mock_app` for the TestSet verification harness.
+tauri = { version = "2", features = ["test"] }
+
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration
 [profile.release]
