@@ -251,7 +251,7 @@ async fn download_json(url: &str) -> Result<String, AppError> {
             return Err(if error.kind() == std::io::ErrorKind::NotFound {
                 AppError::new(
                     "yt-dlp-missing",
-                    "yt-dlp was not found. Install it or set YT_DLP_PATH.",
+                    "yt-dlp was not found. Reinstall the app or set YT_DLP_PATH.",
                 )
             } else {
                 AppError::new("yt-dlp-error", format!("Could not run yt-dlp: {error}"))

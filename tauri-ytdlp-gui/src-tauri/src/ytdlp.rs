@@ -1,3 +1,4 @@
+use std::path::{Path, PathBuf};
 use std::process::Stdio;
 use std::time::Duration;
 
@@ -11,24 +12,80 @@ use crate::models::{DirectoryTree, MediaInfo, MediaType};
 /// Analysis should never hang the app; kill yt-dlp after this long.
 const ANALYZE_TIMEOUT: Duration = Duration::from_secs(45);
 
-/// Path to the yt-dlp binary, honouring the `YT_DLP_PATH` override.
-pub fn yt_dlp_path() -> String {
-    std::env::var("YT_DLP_PATH").unwrap_or_else(|_| "yt-dlp".to_string())
+/// Resolves a Tauri sidecar next to the running executable. During tests the
+/// test binary lives in `target/debug/deps`, so walk up one directory just like
+/// Tauri's shell plugin does.
+fn sidecar_candidate(executable: &Path, name: &str) -> Option<PathBuf> {
+    let executable_dir = executable.parent()?;
+    let base_dir = if executable_dir.ends_with("deps") {
+        executable_dir.parent().unwrap_or(executable_dir)
+    } else {
+        executable_dir
+    };
+
+    let mut path = base_dir.join(name);
+    #[cfg(windows)]
+    {
+        let already_exe = path.extension().is_some_and(|extension| extension == "exe");
+        if !already_exe {
+            // Keep dots in names such as `yt-dlp-sidecar` intact.
+            path.as_mut_os_string().push(".exe");
+        }
+    }
+    #[cfg(not(windows))]
+    {
+        if path.extension().is_some_and(|extension| extension == "exe") {
+            path.set_extension("");
+        }
+    }
+
+    path.is_file().then_some(path)
 }
 
-/// Path to the FFmpeg binary, honouring the `FFMPEG_PATH` override.
-pub fn ffmpeg_path() -> String {
-    std::env::var("FFMPEG_PATH").unwrap_or_else(|_| "ffmpeg".to_string())
+fn bundled_sidecar(name: &str) -> Option<PathBuf> {
+    let executable = std::env::current_exe().ok()?;
+    sidecar_candidate(&executable, name)
 }
 
-/// Path to ffprobe, honouring the `FFPROBE_PATH` override. It is only used to
-/// fill in missing durations so the GIF length limit can still be applied.
-pub fn ffprobe_path() -> String {
-    std::env::var("FFPROBE_PATH").unwrap_or_else(|_| "ffprobe".to_string())
+/// Picks the first available tool path: explicit override, bundled sidecar,
+/// then the system PATH fallback.
+fn choose_tool_path(
+    override_path: Option<PathBuf>,
+    sidecar: Option<PathBuf>,
+    fallback: &str,
+) -> PathBuf {
+    override_path
+        .or(sidecar)
+        .unwrap_or_else(|| PathBuf::from(fallback))
 }
 
-/// Builds the yt-dlp command. A bundled sidecar or user-configured path can be
-/// added later; for now an env override wins over the system PATH.
+fn resolve_tool(env_var: &str, sidecar_name: &str, fallback: &str) -> PathBuf {
+    choose_tool_path(
+        std::env::var_os(env_var).map(PathBuf::from),
+        bundled_sidecar(sidecar_name),
+        fallback,
+    )
+}
+
+/// Path to the yt-dlp binary: `YT_DLP_PATH`, the bundled sidecar, then PATH.
+pub fn yt_dlp_path() -> PathBuf {
+    resolve_tool("YT_DLP_PATH", "yt-dlp-sidecar", "yt-dlp")
+}
+
+/// Path to the FFmpeg binary: `FFMPEG_PATH`, the bundled sidecar, then PATH.
+pub fn ffmpeg_path() -> PathBuf {
+    resolve_tool("FFMPEG_PATH", "ffmpeg-sidecar", "ffmpeg")
+}
+
+/// Path to ffprobe: `FFPROBE_PATH`, the bundled sidecar, then PATH. It is only
+/// used to fill in missing durations so the GIF length limit can still be
+/// applied.
+pub fn ffprobe_path() -> PathBuf {
+    resolve_tool("FFPROBE_PATH", "ffprobe-sidecar", "ffprobe")
+}
+
+/// Builds the yt-dlp command. The bundled sidecar wins over a system install;
+/// `YT_DLP_PATH` remains the escape hatch for debugging or a custom build.
 pub(crate) fn ytdlp_command() -> Command {
     let mut command = Command::new(yt_dlp_path());
     // Never leave a child behind when the future is dropped or timed out.
@@ -148,7 +205,7 @@ pub async fn analyze(url: &str) -> Result<MediaInfo, AppError> {
             if error.kind() == std::io::ErrorKind::NotFound {
                 AppError::new(
                     "yt-dlp-missing",
-                    "yt-dlp was not found. Install it or set YT_DLP_PATH.",
+                    "yt-dlp was not found. Reinstall the app or set YT_DLP_PATH.",
                 )
             } else {
                 AppError::new("yt-dlp-error", format!("Could not run yt-dlp: {error}"))
@@ -426,5 +483,79 @@ mod tests {
         });
 
         assert_eq!(detect_media_type(&info), MediaType::Image);
+    }
+
+    fn sidecar_file_name(name: &str) -> String {
+        #[cfg(windows)]
+        {
+            format!("{name}.exe")
+        }
+        #[cfg(not(windows))]
+        {
+            name.to_string()
+        }
+    }
+
+    fn sidecar_test_dir() -> PathBuf {
+        use std::sync::atomic::{AtomicU64, Ordering};
+        static NEXT: AtomicU64 = AtomicU64::new(0);
+
+        let unique = NEXT.fetch_add(1, Ordering::Relaxed);
+        std::env::temp_dir().join(format!(
+            "yt-dlp-gui-sidecar-test-{}-{unique}",
+            std::process::id()
+        ))
+    }
+
+    #[test]
+    fn resolves_a_sidecar_next_to_the_executable_and_out_of_deps() {
+        let dir = sidecar_test_dir();
+        let deps = dir.join("deps");
+        std::fs::create_dir_all(&deps).expect("temp deps directory should be created");
+        let sidecar = dir.join(sidecar_file_name("ffmpeg-sidecar"));
+        std::fs::write(&sidecar, b"x").expect("sidecar file should be written");
+
+        assert_eq!(
+            sidecar_candidate(&dir.join("app"), "ffmpeg-sidecar"),
+            Some(sidecar.clone())
+        );
+        assert_eq!(
+            sidecar_candidate(&deps.join("app-test"), "ffmpeg-sidecar"),
+            Some(sidecar)
+        );
+
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn prefers_an_override_then_the_sidecar_then_path() {
+        let override_path = PathBuf::from("/custom/yt-dlp");
+        let sidecar = PathBuf::from("/bundle/yt-dlp-sidecar");
+
+        assert_eq!(
+            choose_tool_path(Some(override_path.clone()), Some(sidecar.clone()), "yt-dlp"),
+            override_path
+        );
+        assert_eq!(
+            choose_tool_path(None, Some(sidecar.clone()), "yt-dlp"),
+            sidecar
+        );
+        assert_eq!(
+            choose_tool_path(None, None, "yt-dlp"),
+            PathBuf::from("yt-dlp")
+        );
+    }
+
+    #[test]
+    fn bundled_sidecars_are_copied_next_to_the_test_binary() {
+        // tauri-build copies configured sidecars to target/debug before tests.
+        // If they are absent, the resolver falls back to PATH, so only assert
+        // when the packaged sidecars are present.
+        if bundled_sidecar("yt-dlp-sidecar").is_none() {
+            return;
+        }
+
+        assert!(bundled_sidecar("ffmpeg-sidecar").is_some());
+        assert!(bundled_sidecar("ffprobe-sidecar").is_some());
     }
 }

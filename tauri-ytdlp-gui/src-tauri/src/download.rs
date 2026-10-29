@@ -14,7 +14,9 @@ use crate::models::{
 };
 use crate::paths::{parse_supported_url, resolve_download_dir};
 use crate::x_api;
-use crate::ytdlp::{ACCOUNT_REQUIRED_MESSAGE, ffmpeg_command, requires_account, ytdlp_command};
+use crate::ytdlp::{
+    ACCOUNT_REQUIRED_MESSAGE, ffmpeg_command, ffmpeg_path, requires_account, ytdlp_command,
+};
 
 /// Only one download may run at a time; a second request is rejected.
 #[derive(Default)]
@@ -260,9 +262,21 @@ fn format_args(format: OutputFormat) -> Vec<String> {
     }
 }
 
-/// Adds `--ffmpeg-location` only when the user pointed us at a custom binary.
+/// Points yt-dlp at the bundled FFmpeg when we have a concrete path. The
+/// sidecar directory also contains `ffprobe-sidecar`; yt-dlp discovers it by
+/// replacing `ffmpeg` with `ffprobe` in the file name. A bare `ffmpeg` command
+/// is left alone so yt-dlp can resolve it from PATH.
 fn apply_ffmpeg_location(command: &mut Command) {
-    if let Ok(location) = std::env::var("FFMPEG_PATH") {
+    let ffmpeg = ffmpeg_path();
+    let location = if ffmpeg.is_absolute() {
+        Some(ffmpeg.clone())
+    } else if ffmpeg.components().count() > 1 && ffmpeg.exists() {
+        ffmpeg.canonicalize().ok()
+    } else {
+        None
+    };
+
+    if let Some(location) = location {
         command.arg("--ffmpeg-location").arg(location);
     }
 }
@@ -272,7 +286,7 @@ fn map_spawn_error(error: std::io::Error, binary: &str, code: &'static str) -> A
     if error.kind() == std::io::ErrorKind::NotFound {
         AppError::new(
             code,
-            format!("{binary} was not found. Install it or set the matching path variable."),
+            format!("{binary} was not found. Reinstall the app or set the matching path variable."),
         )
     } else {
         AppError::new(code, format!("Could not run {binary}: {error}"))

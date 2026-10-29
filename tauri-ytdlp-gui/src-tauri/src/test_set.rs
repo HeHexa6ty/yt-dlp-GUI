@@ -23,6 +23,7 @@ use crate::models::{
     ConflictMode, DirectoryMode, DirectoryRequest, DownloadRequest, GifQuality, MediaType,
     OutputFormat,
 };
+use crate::ytdlp::{ffmpeg_path, yt_dlp_path};
 
 /// One row from `TestSet.md`: a method applied to one or more URLs.
 #[derive(Debug, Clone)]
@@ -314,8 +315,8 @@ async fn verify_test_set() {
         finished_epoch_seconds: finished,
         test_set: relative_path(project_dir, &test_set_path),
         results_dir: relative_path(project_dir, &results_dir),
-        yt_dlp_version: command_version("yt-dlp", &["--version"]),
-        ffmpeg_version: command_version("ffmpeg", &["-version"]),
+        yt_dlp_version: command_version(&yt_dlp_path(), &["--version"]),
+        ffmpeg_version: command_version(&ffmpeg_path(), &["-version"]),
         total: results.len(),
         backend_passed,
         fully_passed,
@@ -661,7 +662,7 @@ fn now_epoch_seconds() -> u64 {
         .unwrap_or(0)
 }
 
-fn command_version(binary: &str, args: &[&str]) -> String {
+fn command_version(binary: &Path, args: &[&str]) -> String {
     std::process::Command::new(binary)
         .args(args)
         .output()
