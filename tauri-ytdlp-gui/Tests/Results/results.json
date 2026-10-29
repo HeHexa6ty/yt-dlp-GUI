@@ -1,0 +1,1451 @@
+{
+  "run_id": "run-1793269276",
+  "started_epoch_seconds": 1793269276,
+  "finished_epoch_seconds": 1793269587,
+  "test_set": "Tests/TestSet.md",
+  "results_dir": "Tests/Results",
+  "yt_dlp_version": "2026.10.26",
+  "ffmpeg_version": "ffmpeg version 6.1.1 Copyright (c) 2000-2023 the FFmpeg developers",
+  "total": 33,
+  "backend_passed": 33,
+  "fully_passed": 33,
+  "ui_only": 0,
+  "not_applicable": 0,
+  "failed": 0,
+  "cases": [
+    {
+      "index": 1,
+      "platform": "YouTube",
+      "method": "Video as video",
+      "url": "https://www.youtube.com/watch?v=0qanF-91aJo",
+      "expected_source": "video",
+      "expected_format": "mp4",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "BLACK SABBATH - \"Paranoid\" (Official Video)",
+        "id": "0qanF-91aJo",
+        "duration": 171.0,
+        "thumbnail": "https://i.ytimg.com/vi/0qanF-91aJo/hqdefault.jpg?sqp=-oaymwEmCOADEOgC8quKqQMa8AEB-AHUBoAC4AOKAgwIABABGF4gXiheMA8=&rs=AOn4CLCdSF5kB2KmaG2rg0MNDxewaoWYqg",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/YouTube",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/youtube/video-as-video/url-1/BLACK SABBATH - _Paranoid_ (Official Video) [0qanF-91aJo].mp4",
+            "size": 42711042,
+            "magic": "MP4",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 2,
+      "platform": "YouTube",
+      "method": "Video as audio",
+      "url": "https://www.youtube.com/watch?v=0qanF-91aJo",
+      "expected_source": "video",
+      "expected_format": "mp3",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "BLACK SABBATH - \"Paranoid\" (Official Video)",
+        "id": "0qanF-91aJo",
+        "duration": 171.0,
+        "thumbnail": "https://i.ytimg.com/vi/0qanF-91aJo/hqdefault.jpg?sqp=-oaymwEmCOADEOgC8quKqQMa8AEB-AHUBoAC4AOKAgwIABABGF4gXiheMA8=&rs=AOn4CLCdSF5kB2KmaG2rg0MNDxewaoWYqg",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/YouTube",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/youtube/video-as-audio/url-1/BLACK SABBATH - _Paranoid_ (Official Video) [0qanF-91aJo].mp3",
+            "size": 5874765,
+            "magic": "MP3",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 3,
+      "platform": "YouTube",
+      "method": "Video as video",
+      "url": "https://www.youtube.com/shorts/2Php6qUjM7U",
+      "expected_source": "video",
+      "expected_format": "mp4",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "Italo Vegliante and his interpretation of the spaghetti Western soundtrack \"For a few dollars more\"",
+        "id": "2Php6qUjM7U",
+        "duration": 53.0,
+        "thumbnail": "https://i.ytimg.com/vi/2Php6qUjM7U/hq720_2.jpg?sqp=-oaymwEoCIAKENAF8quKqQMcGADwAQH4AYwCgALgA4oCDAgAEAEYZSBSKFAwDw==&rs=AOn4CLDWNxpurtUcTEI4CM7NnreeinleOw",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/YouTube",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/youtube/video-as-video/url-1/Italo Vegliante and his interpretation of the spaghetti Western soundtrack _For a few dollars more_ [2Php6qUjM7U].mp4",
+            "size": 4630353,
+            "magic": "MP4",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 4,
+      "platform": "YouTube",
+      "method": "Video as audio",
+      "url": "https://www.youtube.com/shorts/2Php6qUjM7U",
+      "expected_source": "video",
+      "expected_format": "mp3",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "Italo Vegliante and his interpretation of the spaghetti Western soundtrack \"For a few dollars more\"",
+        "id": "2Php6qUjM7U",
+        "duration": 53.0,
+        "thumbnail": "https://i.ytimg.com/vi/2Php6qUjM7U/hq720_2.jpg?sqp=-oaymwEoCIAKENAF8quKqQMcGADwAQH4AYwCgALgA4oCDAgAEAEYZSBSKFAwDw==&rs=AOn4CLDWNxpurtUcTEI4CM7NnreeinleOw",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/YouTube",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/youtube/video-as-audio/url-1/Italo Vegliante and his interpretation of the spaghetti Western soundtrack _For a few dollars more_ [2Php6qUjM7U].mp3",
+            "size": 1103421,
+            "magic": "MP3",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 5,
+      "platform": "Instagram",
+      "method": "Image as",
+      "url": "https://www.instagram.com/p/DXs_dQLiJ1Z/",
+      "expected_source": "image",
+      "expected_format": "png",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "image",
+        "title": "Video by deadlockupdate",
+        "id": "DXs_dQLiJ1Z",
+        "duration": null,
+        "thumbnail": "https://scontent-waw2-2.cdninstagram.com/v/t51.82787-15/683809642_17925357999298420_7912364459736816884_n.heic?stp=dst-jpg_e35_tt6&_nc_cat=105&ig_cache_key=Mzg4NTc1OTY2NTY4MjI5MjA1Nw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=znQdAZ-Jt9MQ7kNvwF3ojLg&_nc_oc=AdoMgiFI1HNODW1i1q9uc1fIiS2s0ZvIgC-yyzM9wKE4VwuctOrh39A9RSDBx3HAegI&_nc_zt=23&_nc_ht=scontent-waw2-2.cdninstagram.com&_nc_gid=-6r-VY8Nc_SKahlKDs6fgQ&_nc_ss=79689&oh=00_AQTzMtjTngOsEB8gYIvg2jSUvlZ9q8EscZCfguXGPMCn0g&oe=6AE8F581",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/Instagram",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/image-as/url-1/Video by deadlockupdate [DXs_dQLiJ1Z].png",
+            "size": 2981396,
+            "magic": "PNG",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 6,
+      "platform": "Instagram",
+      "method": "Image as",
+      "url": "https://www.instagram.com/p/DXs_dQLiJ1Z/",
+      "expected_source": "image",
+      "expected_format": "jpg",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "image",
+        "title": "Video by deadlockupdate",
+        "id": "DXs_dQLiJ1Z",
+        "duration": null,
+        "thumbnail": "https://scontent-waw2-2.cdninstagram.com/v/t51.82787-15/683809642_17925357999298420_7912364459736816884_n.heic?stp=dst-jpg_e35_tt6&_nc_cat=105&ig_cache_key=Mzg4NTc1OTY2NTY4MjI5MjA1Nw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=znQdAZ-Jt9MQ7kNvwF3ojLg&_nc_oc=AdoMgiFI1HNODW1i1q9uc1fIiS2s0ZvIgC-yyzM9wKE4VwuctOrh39A9RSDBx3HAegI&_nc_zt=23&_nc_ht=scontent-waw2-2.cdninstagram.com&_nc_gid=E_D3HJflgVIMCDeuTWViHA&_nc_ss=79689&oh=00_AQTXPMxPBc0googY0a1YVD5pc2co8W-6WHtKjPAzvTR0Xw&oe=6AE8F581",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/Instagram",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/image-as/url-1/Video by deadlockupdate [DXs_dQLiJ1Z].jpg",
+            "size": 238751,
+            "magic": "JPG",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 7,
+      "platform": "Instagram",
+      "method": "Image as",
+      "url": "https://www.instagram.com/p/DXs_dQLiJ1Z/",
+      "expected_source": "image",
+      "expected_format": "gif",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "image",
+        "title": "Video by deadlockupdate",
+        "id": "DXs_dQLiJ1Z",
+        "duration": null,
+        "thumbnail": "https://scontent-waw2-2.cdninstagram.com/v/t51.82787-15/683809642_17925357999298420_7912364459736816884_n.heic?stp=dst-jpg_e35_tt6&_nc_cat=105&ig_cache_key=Mzg4NTc1OTY2NTY4MjI5MjA1Nw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=znQdAZ-Jt9MQ7kNvwF3ojLg&_nc_oc=AdoMgiFI1HNODW1i1q9uc1fIiS2s0ZvIgC-yyzM9wKE4VwuctOrh39A9RSDBx3HAegI&_nc_zt=23&_nc_ht=scontent-waw2-2.cdninstagram.com&_nc_gid=-OZ5Ss3Zaqx7asekq_j7kA&_nc_ss=79689&oh=00_AQSx8S6og5njdAqAR1BLELX3oxrvievzb8l4ZXMOAeQwjg&oe=6AE8F581",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/Instagram",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/image-as/url-1/Video by deadlockupdate [DXs_dQLiJ1Z].gif",
+            "size": 167860,
+            "magic": "GIF",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 8,
+      "platform": "Instagram",
+      "method": "Carousel as",
+      "url": "https://www.instagram.com/p/Del3uLqj-Bd/",
+      "expected_source": "image",
+      "expected_format": "png",
+      "expect_multiple": true,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "image",
+        "title": "Video by youlooksmartman",
+        "id": "Del2uCbvQKq",
+        "duration": null,
+        "thumbnail": "https://scontent-waw2-2.cdninstagram.com/v/t51.82787-15/849485684_17947183542354550_7855524005351815605_n.webp?stp=dst-webp_s640x640&_nc_cat=101&ig_cache_key=NDAwOTg1MTcwMTQ2MzY3OTY1OA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=fspTyKXsZfYQ7kNvwGmX2BX&_nc_oc=AdoV9gYy_r1gc6FXsf2RY2FmSVnJBVyssRZB8zZ2AyYaxupqcdkAOKYsrgKJ1thS84A&_nc_zt=23&_nc_ht=scontent-waw2-2.cdninstagram.com&_nc_gid=evw2L9r7vST2SG2X1hZD0w&_nc_ss=79689&oh=00_AQTfwxjazfkM3QS1mal13o99Hmt3FcYCqX17MlLR9djDOQ&oe=6AE8FFC0",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/Instagram",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": ">= 2",
+        "actual_count": 10,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_1.png",
+            "size": 161653,
+            "magic": "PNG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_2.png",
+            "size": 187198,
+            "magic": "PNG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_3.png",
+            "size": 162442,
+            "magic": "PNG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_4.png",
+            "size": 164767,
+            "magic": "PNG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_5.png",
+            "size": 159463,
+            "magic": "PNG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_6.png",
+            "size": 151347,
+            "magic": "PNG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_7.png",
+            "size": 164509,
+            "magic": "PNG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_8.png",
+            "size": 156065,
+            "magic": "PNG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_9.png",
+            "size": 137925,
+            "magic": "PNG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_10.png",
+            "size": 157137,
+            "magic": "PNG",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 9,
+      "platform": "Instagram",
+      "method": "Carousel as",
+      "url": "https://www.instagram.com/p/Del3uLqj-Bd/",
+      "expected_source": "image",
+      "expected_format": "jpg",
+      "expect_multiple": true,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "image",
+        "title": "Video by youlooksmartman",
+        "id": "Del2uCbvQKq",
+        "duration": null,
+        "thumbnail": "https://scontent-waw2-2.cdninstagram.com/v/t51.82787-15/849485684_17947183542354550_7855524005351815605_n.webp?stp=dst-webp_s640x640&_nc_cat=101&ig_cache_key=NDAwOTg1MTcwMTQ2MzY3OTY1OA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=fspTyKXsZfYQ7kNvwGmX2BX&_nc_oc=AdoV9gYy_r1gc6FXsf2RY2FmSVnJBVyssRZB8zZ2AyYaxupqcdkAOKYsrgKJ1thS84A&_nc_zt=23&_nc_ht=scontent-waw2-2.cdninstagram.com&_nc_gid=yYWbCvIlbFUfn1GGcFP98A&_nc_ss=79689&oh=00_AQSLH27ZKhLVh9lzp1hyY_-9PKow8aQOMb4ghEUFZ5oKRQ&oe=6AE8FFC0",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/Instagram",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": ">= 2",
+        "actual_count": 10,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_1.jpg",
+            "size": 39599,
+            "magic": "JPG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_2.jpg",
+            "size": 44408,
+            "magic": "JPG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_3.jpg",
+            "size": 37583,
+            "magic": "JPG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_4.jpg",
+            "size": 39621,
+            "magic": "JPG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_5.jpg",
+            "size": 41776,
+            "magic": "JPG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_6.jpg",
+            "size": 35433,
+            "magic": "JPG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_7.jpg",
+            "size": 38962,
+            "magic": "JPG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_8.jpg",
+            "size": 37848,
+            "magic": "JPG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_9.jpg",
+            "size": 34953,
+            "magic": "JPG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/carousel-as/url-1/Video by youlooksmartman [Del2uCbvQKq]_10.jpg",
+            "size": 40892,
+            "magic": "JPG",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 10,
+      "platform": "Instagram",
+      "method": "Video as video",
+      "url": "https://www.instagram.com/p/DeHol0COVql/",
+      "expected_source": "video",
+      "expected_format": "mp4",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "Video by korsaghost",
+        "id": "DeHol0COVql",
+        "duration": 12.236916,
+        "thumbnail": "https://scontent-waw2-1.cdninstagram.com/v/t51.71878-15/838949054_1629772715395980_2929587651417056685_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=110&ig_cache_key=NDAwMTM0NTMxNDI5NDk0NjQ2OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjY0MC5zZHIudmlkZW9fZmlyc3RfZnJhbWVfdGh1bWJuYWlsLkMzIn0%3D&_nc_ohc=lLDHuL3rkMsQ7kNvwE-C4rS&_nc_oc=Adq8qwkcSThz7GI9mABQHkaa5fuGYA2vv6NuD_Z7RyGc75sDxMwZz_gIyzWv7gsi4Zs&_nc_zt=23&_nc_ht=scontent-waw2-1.cdninstagram.com&_nc_gid=mNq1g6TweNXcUqQS9LRb7A&_nc_ss=79689&oh=00_AQSTljI_2QE_Ye0ZGg2aC6avM6pQidnqTkchOsu-fZQ0xQ&oe=6AE902DD",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/Instagram",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/video-as-video/url-1/Video by korsaghost [DeHol0COVql].mp4",
+            "size": 1834989,
+            "magic": "MP4",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 11,
+      "platform": "Instagram",
+      "method": "Video as video",
+      "url": "https://www.instagram.com/p/DeUUWEEBR3k/",
+      "expected_source": "video",
+      "expected_format": "mp4",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "Video by welloffables",
+        "id": "DeUUWEEBR3k",
+        "duration": 29.720091,
+        "thumbnail": "https://scontent-waw2-1.cdninstagram.com/v/t51.71878-15/843509833_1431958725735538_2626170879507308347_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=1&ig_cache_key=NDAwNDkxNTQ0NTc2MDMzNTMzMg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjY0MC5zZHIudmlkZW9fZmlyc3RfZnJhbWVfdGh1bWJuYWlsLkMzIn0%3D&_nc_ohc=xBSj1eUpoVoQ7kNvwFzSQFE&_nc_oc=AdrmENrfuhY0i0PVwuJ-hfkY43xqAbg7JzGv7kYT9rD4jnkbGJQlBaIOl7yowM22skg&_nc_zt=23&_nc_ht=scontent-waw2-1.cdninstagram.com&_nc_gid=3uSJfa-e6a4OPsTwZLmbig&_nc_ss=79689&oh=00_AQRayjUVab-iCjpmBpCLeW6Y0Po8AWaF0ETKQd-l8FNq6w&oe=6AE901AC",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/Instagram",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/video-as-video/url-2/Video by welloffables [DeUUWEEBR3k].mp4",
+            "size": 7463663,
+            "magic": "MP4",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 12,
+      "platform": "Instagram",
+      "method": "Video as audio",
+      "url": "https://www.instagram.com/p/DeHol0COVql/",
+      "expected_source": "video",
+      "expected_format": "mp3",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "Video by korsaghost",
+        "id": "DeHol0COVql",
+        "duration": 12.236916,
+        "thumbnail": "https://scontent-waw2-1.cdninstagram.com/v/t51.71878-15/838949054_1629772715395980_2929587651417056685_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=110&ig_cache_key=NDAwMTM0NTMxNDI5NDk0NjQ2OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjY0MC5zZHIudmlkZW9fZmlyc3RfZnJhbWVfdGh1bWJuYWlsLkMzIn0%3D&_nc_ohc=lLDHuL3rkMsQ7kNvwE-C4rS&_nc_oc=Adq8qwkcSThz7GI9mABQHkaa5fuGYA2vv6NuD_Z7RyGc75sDxMwZz_gIyzWv7gsi4Zs&_nc_zt=23&_nc_ht=scontent-waw2-1.cdninstagram.com&_nc_gid=nquWsqQc6SdtgnSfAGtuPw&_nc_ss=79689&oh=00_AQRaPknhXVUIb4ltjdR7lBWmx2jPt6xDuBfIlNge79yx7A&oe=6AE902DD",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/Instagram",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/video-as-audio/url-1/Video by korsaghost [DeHol0COVql].mp3",
+            "size": 355603,
+            "magic": "MP3",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 13,
+      "platform": "Instagram",
+      "method": "Video as audio",
+      "url": "https://www.instagram.com/p/DeUUWEEBR3k/",
+      "expected_source": "video",
+      "expected_format": "mp3",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "Video by welloffables",
+        "id": "DeUUWEEBR3k",
+        "duration": 29.720091,
+        "thumbnail": "https://scontent-waw2-1.cdninstagram.com/v/t51.71878-15/843509833_1431958725735538_2626170879507308347_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=1&ig_cache_key=NDAwNDkxNTQ0NTc2MDMzNTMzMg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjY0MC5zZHIudmlkZW9fZmlyc3RfZnJhbWVfdGh1bWJuYWlsLkMzIn0%3D&_nc_ohc=xBSj1eUpoVoQ7kNvwFzSQFE&_nc_oc=AdrmENrfuhY0i0PVwuJ-hfkY43xqAbg7JzGv7kYT9rD4jnkbGJQlBaIOl7yowM22skg&_nc_zt=23&_nc_ht=scontent-waw2-1.cdninstagram.com&_nc_gid=9UGhfYDw2zF9vqYY4tNLBg&_nc_ss=79689&oh=00_AQRqfRapcCqeLB90adhqIofcS5VAmBqZYSokPSioJwf6Jw&oe=6AE901AC",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/Instagram",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/video-as-audio/url-2/Video by welloffables [DeUUWEEBR3k].mp3",
+            "size": 895655,
+            "magic": "MP3",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 14,
+      "platform": "Instagram",
+      "method": "Video as gif",
+      "url": "https://www.instagram.com/p/DeHol0COVql/",
+      "expected_source": "video",
+      "expected_format": "gif",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "Video by korsaghost",
+        "id": "DeHol0COVql",
+        "duration": 12.236916,
+        "thumbnail": "https://scontent-waw2-1.cdninstagram.com/v/t51.71878-15/838949054_1629772715395980_2929587651417056685_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=110&ig_cache_key=NDAwMTM0NTMxNDI5NDk0NjQ2OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjY0MC5zZHIudmlkZW9fZmlyc3RfZnJhbWVfdGh1bWJuYWlsLkMzIn0%3D&_nc_ohc=lLDHuL3rkMsQ7kNvwE-C4rS&_nc_oc=Adq8qwkcSThz7GI9mABQHkaa5fuGYA2vv6NuD_Z7RyGc75sDxMwZz_gIyzWv7gsi4Zs&_nc_zt=23&_nc_ht=scontent-waw2-1.cdninstagram.com&_nc_gid=eIv8GOtwCoDa8__KsRv6-A&_nc_ss=79689&oh=00_AQQI_4UfuSNb3B6UJZKpG4iUvFc3ksFMBUAQFskWDsdV7Q&oe=6AE902DD",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/Instagram",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/video-as-gif/url-1/Video by korsaghost [DeHol0COVql].gif",
+            "size": 21786519,
+            "magic": "GIF",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 15,
+      "platform": "Instagram",
+      "method": "Video as gif",
+      "url": "https://www.instagram.com/p/DeUUWEEBR3k/",
+      "expected_source": "video",
+      "expected_format": "gif",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "Video by welloffables",
+        "id": "DeUUWEEBR3k",
+        "duration": 29.720091,
+        "thumbnail": "https://scontent-waw2-1.cdninstagram.com/v/t51.71878-15/843509833_1431958725735538_2626170879507308347_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=1&ig_cache_key=NDAwNDkxNTQ0NTc2MDMzNTMzMg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjY0MC5zZHIudmlkZW9fZmlyc3RfZnJhbWVfdGh1bWJuYWlsLkMzIn0%3D&_nc_ohc=xBSj1eUpoVoQ7kNvwFzSQFE&_nc_oc=AdrmENrfuhY0i0PVwuJ-hfkY43xqAbg7JzGv7kYT9rD4jnkbGJQlBaIOl7yowM22skg&_nc_zt=23&_nc_ht=scontent-waw2-1.cdninstagram.com&_nc_gid=1pKQ-fx9HwQsiNVEp4_ZOQ&_nc_ss=79689&oh=00_AQQWuLmIYZHbRLVd67FC_-xy7u_JTbrJqslBIk7OHfT6fA&oe=6AE901AC",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/Instagram",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/instagram/video-as-gif/url-2/Video by welloffables [DeUUWEEBR3k].gif",
+            "size": 71534231,
+            "magic": "GIF",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 16,
+      "platform": "X",
+      "method": "GIF in post",
+      "url": "https://x.com/whippyberry/status/2114022926886596998",
+      "expected_source": "gif",
+      "expected_format": "gif",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "gif",
+        "title": "Whippy🌸 (COMM OPENS) - fat rem being a fat chud after eating all the farms hits a big snooze...",
+        "id": "2114018698285703168",
+        "duration": null,
+        "thumbnail": "https://pbs.twimg.com/tweet_video_thumb/HVaAzjfaYAAe8x0.jpg?name=orig",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/X",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/gif-in-post/url-1/Whippy🌸 (COMM OPENS) - fat rem being a fat chud after eating all the farms hits a big snooze [2114018698285703168].gif",
+            "size": 425146,
+            "magic": "GIF",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 17,
+      "platform": "X",
+      "method": "GIF as a post",
+      "url": "https://x.com/i/status/2114022926886596998",
+      "expected_source": "gif",
+      "expected_format": "gif",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "gif",
+        "title": "Whippy🌸 (COMM OPENS) - fat rem being a fat chud after eating all the farms hits a big snooze...",
+        "id": "2114018698285703168",
+        "duration": null,
+        "thumbnail": "https://pbs.twimg.com/tweet_video_thumb/HVaAzjfaYAAe8x0.jpg?name=orig",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/X",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/gif-as-a-post/url-1/Whippy🌸 (COMM OPENS) - fat rem being a fat chud after eating all the farms hits a big snooze [2114018698285703168].gif",
+            "size": 425146,
+            "magic": "GIF",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 18,
+      "platform": "X",
+      "method": "Image as",
+      "url": "https://x.com/Bonnymama7/status/2108936914166567227?s=20",
+      "expected_source": "image",
+      "expected_format": "png",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "image",
+        "title": "Bonny 😉 (Commission OPEN) - Spit her out 🐈  #deadlock",
+        "id": "2108936914166567227",
+        "duration": null,
+        "thumbnail": "https://pbs.twimg.com/media/HURyjnQaYAA6uSk.jpg?name=orig",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/X",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/image-as/url-1/Bonny 😉 (Commission OPEN) - Spit her out 🐈 #deadlock [2108936914166567227].png",
+            "size": 7327082,
+            "magic": "PNG",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 19,
+      "platform": "X",
+      "method": "Image as",
+      "url": "https://x.com/Bonnymama7/status/2108936914166567227?s=20",
+      "expected_source": "image",
+      "expected_format": "jpg",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "image",
+        "title": "Bonny 😉 (Commission OPEN) - Spit her out 🐈  #deadlock",
+        "id": "2108936914166567227",
+        "duration": null,
+        "thumbnail": "https://pbs.twimg.com/media/HURyjnQaYAA6uSk.jpg?name=orig",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/X",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/image-as/url-1/Bonny 😉 (Commission OPEN) - Spit her out 🐈 #deadlock [2108936914166567227].jpg",
+            "size": 710468,
+            "magic": "JPG",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 20,
+      "platform": "X",
+      "method": "Image as",
+      "url": "https://x.com/Bonnymama7/status/2108936914166567227?s=20",
+      "expected_source": "image",
+      "expected_format": "gif",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "image",
+        "title": "Bonny 😉 (Commission OPEN) - Spit her out 🐈  #deadlock",
+        "id": "2108936914166567227",
+        "duration": null,
+        "thumbnail": "https://pbs.twimg.com/media/HURyjnQaYAA6uSk.jpg?name=orig",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/X",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/image-as/url-1/Bonny 😉 (Commission OPEN) - Spit her out 🐈 #deadlock [2108936914166567227].gif",
+            "size": 147473,
+            "magic": "GIF",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 21,
+      "platform": "X",
+      "method": "Carousel as",
+      "url": "https://x.com/malymon/status/2017391718954332185?s=20",
+      "expected_source": "image",
+      "expected_format": "png",
+      "expect_multiple": true,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "image",
+        "title": "maly 🌸 VGen Artist - Deadlock Rem and Graves icons inspired by Overwatch Cute Player icons...",
+        "id": "2017391718954332185",
+        "duration": null,
+        "thumbnail": "https://pbs.twimg.com/media/G_82dNLXoAAorPZ.png?name=orig",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/X",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": ">= 2",
+        "actual_count": 2,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/carousel-as/url-1/maly 🌸 VGen Artist - Deadlock Rem and Graves icons inspired by Overwatch Cute Player icons [2017391718954332185]_1.png",
+            "size": 43764,
+            "magic": "PNG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/carousel-as/url-1/maly 🌸 VGen Artist - Deadlock Rem and Graves icons inspired by Overwatch Cute Player icons [2017391718954332185]_2.png",
+            "size": 44903,
+            "magic": "PNG",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 22,
+      "platform": "X",
+      "method": "Carousel as",
+      "url": "https://x.com/malymon/status/2017391718954332185?s=20",
+      "expected_source": "image",
+      "expected_format": "jpg",
+      "expect_multiple": true,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "image",
+        "title": "maly 🌸 VGen Artist - Deadlock Rem and Graves icons inspired by Overwatch Cute Player icons...",
+        "id": "2017391718954332185",
+        "duration": null,
+        "thumbnail": "https://pbs.twimg.com/media/G_82dNLXoAAorPZ.png?name=orig",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/X",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": ">= 2",
+        "actual_count": 2,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/carousel-as/url-1/maly 🌸 VGen Artist - Deadlock Rem and Graves icons inspired by Overwatch Cute Player icons [2017391718954332185]_1.jpg",
+            "size": 20920,
+            "magic": "JPG",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/carousel-as/url-1/maly 🌸 VGen Artist - Deadlock Rem and Graves icons inspired by Overwatch Cute Player icons [2017391718954332185]_2.jpg",
+            "size": 25985,
+            "magic": "JPG",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 23,
+      "platform": "X",
+      "method": "Carousel as",
+      "url": "https://x.com/malymon/status/2017391718954332185?s=20",
+      "expected_source": "image",
+      "expected_format": "gif",
+      "expect_multiple": true,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "image",
+        "title": "maly 🌸 VGen Artist - Deadlock Rem and Graves icons inspired by Overwatch Cute Player icons...",
+        "id": "2017391718954332185",
+        "duration": null,
+        "thumbnail": "https://pbs.twimg.com/media/G_82dNLXoAAorPZ.png?name=orig",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/X",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": ">= 2",
+        "actual_count": 2,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/carousel-as/url-1/maly 🌸 VGen Artist - Deadlock Rem and Graves icons inspired by Overwatch Cute Player icons [2017391718954332185]_1.gif",
+            "size": 42210,
+            "magic": "GIF",
+            "magic_ok": true,
+            "extension_ok": true
+          },
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/carousel-as/url-1/maly 🌸 VGen Artist - Deadlock Rem and Graves icons inspired by Overwatch Cute Player icons [2017391718954332185]_2.gif",
+            "size": 46113,
+            "magic": "GIF",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 24,
+      "platform": "X",
+      "method": "Video as gif",
+      "url": "https://x.com/KazaArte/status/2110379220325343539?s=20",
+      "expected_source": "video",
+      "expected_format": "gif",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "睾丸爆炸99 - Rem riding tricycle hitting heavy crate and die  #Deadlock",
+        "id": "2110379007078449152",
+        "duration": 2.033,
+        "thumbnail": "https://pbs.twimg.com/amplify_video_thumb/2110379007078449152/img/6FoAeA072G1DqKT_.jpg?name=orig",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/X",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/video-as-gif/url-1/睾丸爆炸99 - Rem riding tricycle hitting heavy crate and die #Deadlock [2110379007078449152].gif",
+            "size": 878098,
+            "magic": "GIF",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 25,
+      "platform": "X",
+      "method": "Video as gif",
+      "url": "https://x.com/KazaArte/status/2110379220325343539/video/1",
+      "expected_source": "video",
+      "expected_format": "gif",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "睾丸爆炸99 - Rem riding tricycle hitting heavy crate and die  #Deadlock",
+        "id": "2110379007078449152",
+        "duration": 2.033,
+        "thumbnail": "https://pbs.twimg.com/amplify_video_thumb/2110379007078449152/img/6FoAeA072G1DqKT_.jpg?name=orig",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/X",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/video-as-gif/url-2/睾丸爆炸99 - Rem riding tricycle hitting heavy crate and die #Deadlock [2110379007078449152].gif",
+            "size": 878098,
+            "magic": "GIF",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 26,
+      "platform": "X",
+      "method": "Video as gif",
+      "url": "https://x.com/KosherRem/status/2113934488711430648/video/1",
+      "expected_source": "video",
+      "expected_format": "gif",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "Ruby - Rem #deadlockrem #deadlock  #Rem",
+        "id": "2113934326668689408",
+        "duration": 12.195,
+        "thumbnail": "https://pbs.twimg.com/amplify_video_thumb/2113934326668689408/img/TeuUEzBaTQpI4b55.jpg?name=orig",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/X",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/video-as-gif/url-3/Ruby - Rem #deadlockrem #deadlock #Rem [2113934326668689408].gif",
+            "size": 13659164,
+            "magic": "GIF",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 27,
+      "platform": "X",
+      "method": "Video as gif",
+      "url": "https://x.com/KosherRem/status/2113934488711430648?s=20",
+      "expected_source": "video",
+      "expected_format": "gif",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "Ruby - Rem #deadlockrem #deadlock  #Rem",
+        "id": "2113934326668689408",
+        "duration": 12.195,
+        "thumbnail": "https://pbs.twimg.com/amplify_video_thumb/2113934326668689408/img/TeuUEzBaTQpI4b55.jpg?name=orig",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/X",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/video-as-gif/url-4/Ruby - Rem #deadlockrem #deadlock #Rem [2113934326668689408].gif",
+            "size": 13659164,
+            "magic": "GIF",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 28,
+      "platform": "X",
+      "method": "Video as video",
+      "url": "https://x.com/KazaArte/status/2110379220325343539?s=20",
+      "expected_source": "video",
+      "expected_format": "mp4",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "睾丸爆炸99 - Rem riding tricycle hitting heavy crate and die  #Deadlock",
+        "id": "2110379007078449152",
+        "duration": 2.033,
+        "thumbnail": "https://pbs.twimg.com/amplify_video_thumb/2110379007078449152/img/6FoAeA072G1DqKT_.jpg?name=orig",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/X",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/video-as-video/url-1/睾丸爆炸99 - Rem riding tricycle hitting heavy crate and die #Deadlock [2110379007078449152].mp4",
+            "size": 152833,
+            "magic": "MP4",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 29,
+      "platform": "X",
+      "method": "Video as video",
+      "url": "https://x.com/KazaArte/status/2110379220325343539/video/1",
+      "expected_source": "video",
+      "expected_format": "mp4",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "睾丸爆炸99 - Rem riding tricycle hitting heavy crate and die  #Deadlock",
+        "id": "2110379007078449152",
+        "duration": 2.033,
+        "thumbnail": "https://pbs.twimg.com/amplify_video_thumb/2110379007078449152/img/6FoAeA072G1DqKT_.jpg?name=orig",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/X",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/video-as-video/url-2/睾丸爆炸99 - Rem riding tricycle hitting heavy crate and die #Deadlock [2110379007078449152].mp4",
+            "size": 152833,
+            "magic": "MP4",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 30,
+      "platform": "X",
+      "method": "Video as video",
+      "url": "https://x.com/KosherRem/status/2113934488711430648/video/1",
+      "expected_source": "video",
+      "expected_format": "mp4",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "Ruby - Rem #deadlockrem #deadlock  #Rem",
+        "id": "2113934326668689408",
+        "duration": 12.195,
+        "thumbnail": "https://pbs.twimg.com/amplify_video_thumb/2113934326668689408/img/TeuUEzBaTQpI4b55.jpg?name=orig",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/X",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/video-as-video/url-3/Ruby - Rem #deadlockrem #deadlock #Rem [2113934326668689408].mp4",
+            "size": 390629,
+            "magic": "MP4",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 31,
+      "platform": "X",
+      "method": "Video as video",
+      "url": "https://x.com/KosherRem/status/2113934488711430648?s=20",
+      "expected_source": "video",
+      "expected_format": "mp4",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "Ruby - Rem #deadlockrem #deadlock  #Rem",
+        "id": "2113934326668689408",
+        "duration": 12.195,
+        "thumbnail": "https://pbs.twimg.com/amplify_video_thumb/2113934326668689408/img/TeuUEzBaTQpI4b55.jpg?name=orig",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/X",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/video-as-video/url-4/Ruby - Rem #deadlockrem #deadlock #Rem [2113934326668689408].mp4",
+            "size": 390629,
+            "magic": "MP4",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 32,
+      "platform": "X",
+      "method": "Video as audio",
+      "url": "https://x.com/KazaArte/status/2110379220325343539?s=20",
+      "expected_source": "video",
+      "expected_format": "mp3",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "睾丸爆炸99 - Rem riding tricycle hitting heavy crate and die  #Deadlock",
+        "id": "2110379007078449152",
+        "duration": 2.033,
+        "thumbnail": "https://pbs.twimg.com/amplify_video_thumb/2110379007078449152/img/6FoAeA072G1DqKT_.jpg?name=orig",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/X",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/video-as-audio/url-1/睾丸爆炸99 - Rem riding tricycle hitting heavy crate and die #Deadlock [2110379007078449152].mp3",
+            "size": 21890,
+            "magic": "MP3",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    },
+    {
+      "index": 33,
+      "platform": "X",
+      "method": "Video as audio",
+      "url": "https://x.com/KazaArte/status/2110379220325343539/video/1",
+      "expected_source": "video",
+      "expected_format": "mp3",
+      "expect_multiple": false,
+      "ui_available": true,
+      "analysis": {
+        "passed": true,
+        "media_type": "video",
+        "title": "睾丸爆炸99 - Rem riding tricycle hitting heavy crate and die  #Deadlock",
+        "id": "2110379007078449152",
+        "duration": 2.033,
+        "thumbnail": "https://pbs.twimg.com/amplify_video_thumb/2110379007078449152/img/6FoAeA072G1DqKT_.jpg?name=orig",
+        "default_directory": "/home/catchy/Downloads/yt-dlp-GUI/X",
+        "error": null
+      },
+      "download": {
+        "passed": true,
+        "expected_count": "1",
+        "actual_count": 1,
+        "files": [
+          {
+            "path": "/home/catchy/Projects/Code/yt-dlp-gui/tauri-ytdlp-gui/Tests/Results/media/run-1793269276/x/video-as-audio/url-2/睾丸爆炸99 - Rem riding tricycle hitting heavy crate and die #Deadlock [2110379007078449152].mp3",
+            "size": 21890,
+            "magic": "MP3",
+            "magic_ok": true,
+            "extension_ok": true
+          }
+        ],
+        "error": null,
+        "error_code": null
+      },
+      "backend_passed": true,
+      "passed": true,
+      "not_applicable": null
+    }
+  ]
+}
