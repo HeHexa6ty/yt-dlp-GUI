@@ -18,6 +18,10 @@ jobs:
 
     runs-on: ${{ matrix.platform }}
 
+    defaults:
+      run:
+        working-directory: yt-dlp-gui
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,6 +31,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: yt-dlp-gui/package-lock.json
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -46,6 +51,19 @@ jobs:
             libayatana-appindicator3-dev \
             librsvg2-dev
 
+      - name: Download Windows FFmpeg
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        run: |
+          Invoke-WebRequest `
+            -Uri "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip" `
+            -OutFile "ffmpeg.zip"
+
+          Expand-Archive -Path "ffmpeg.zip" -DestinationPath "ffmpeg-temp"
+
+          Copy-Item "ffmpeg-temp/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe" "yt-dlp-gui/src-tauri/binaries/ffmpeg-sidecar-x86_64-pc-windows-msvc.exe"
+          Copy-Item "ffmpeg-temp/ffmpeg-master-latest-win64-gpl/bin/ffprobe.exe" "yt-dlp-gui/src-tauri/binaries/ffprobe-sidecar-x86_64-pc-windows-msvc.exe"
+      
       - name: Install frontend dependencies
         run: npm ci
 
@@ -62,3 +80,4 @@ jobs:
           releaseDraft: true
           prerelease: false
           uploadUpdaterJson: true
+          
