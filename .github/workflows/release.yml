@@ -61,8 +61,8 @@ jobs:
 
           Expand-Archive -Path "ffmpeg.zip" -DestinationPath "ffmpeg-temp"
 
-          Copy-Item "ffmpeg-temp/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe" "yt-dlp-gui/src-tauri/binaries/ffmpeg-sidecar-x86_64-pc-windows-msvc.exe"
-          Copy-Item "ffmpeg-temp/ffmpeg-master-latest-win64-gpl/bin/ffprobe.exe" "yt-dlp-gui/src-tauri/binaries/ffprobe-sidecar-x86_64-pc-windows-msvc.exe"
+          Copy-Item "ffmpeg-temp/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe" "src-tauri/binaries/ffmpeg-sidecar-x86_64-pc-windows-msvc.exe"
+          Copy-Item "ffmpeg-temp/ffmpeg-master-latest-win64-gpl/bin/ffprobe.exe" "src-tauri/binaries/ffprobe-sidecar-x86_64-pc-windows-msvc.exe"
       
       - name: Install frontend dependencies
         run: npm ci
