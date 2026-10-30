@@ -1,6 +1,10 @@
+// React Hooks:
 import { useEffect, useRef, useState } from "react";
+// Tauri Dialog Plugin:
 import { open } from "@tauri-apps/plugin-dialog";
+// Tauri Event Types:
 import type { UnlistenFn } from "@tauri-apps/api/event";
+// Custom Components:
 import AnalyzeButton from "./components/AnalyzeButton";
 import DirectoryDiv from "./components/DirectoryDiv";
 import DownloadButton from "./components/DownloadButton";
@@ -8,6 +12,7 @@ import DownloadStatus from "./components/DownloadStatus";
 import MediaPreview from "./components/MediaPreview";
 import MediaTypeSelector from "./components/MediaTypeSelector";
 import UrlInput from "./components/UrlInput";
+// Custom Services:
 import {
   analyzeUrl,
   downloadMedia,
@@ -15,6 +20,7 @@ import {
   getErrorMessage,
   onDownloadProgress,
 } from "./services/tauri";
+// Custom Types:
 import {
   getAvailableFormats,
   type ConflictMode,
@@ -24,7 +30,9 @@ import {
   type MediaInfo,
   type OutputFormat,
 } from "./types";
+// Utility Function:
 import { isSupportedUrl } from "./utils/url";
+// CSS Styles:
 import "./App.css";
 
 /** Delay before a supported URL is analyzed automatically. */
@@ -47,6 +55,7 @@ const INITIAL_PROGRESS: ProgressState = {
 
 function App() {
   const [url, setUrl] = useState("");
+  // TypeScript specific: useState with <> returns null or MediaInfo and only these types
   const [media, setMedia] = useState<MediaInfo | null>(null);
   const [format, setFormat] = useState<OutputFormat | null>(null);
   const [gifQuality, setGifQuality] = useState<GifQuality>("better");
@@ -73,7 +82,8 @@ function App() {
 
   const handleUrlChange = (value: string) => {
     // Invalidate any analysis that is still running for the old URL.
-    requestId.current += 1;
+    // Purpose: This line ensures that any ongoing analysis or operations associated with the old URL are invalidated or ignored when a new URL is entered.
+    requestId.current += 1; 
     setUrl(value);
     setMedia(null);
     setFormat(null);
@@ -87,8 +97,12 @@ function App() {
   };
 
   const runAnalyze = async () => {
+    // - Purpose: Ensures that the analysis is not initiated under certain conditions:
+    // - If the URL is not supported by the application.
+    // - If an analysis is already in progress (analyzing is true).
+    // - If a download is in progress (downloading is true).
     if (!supported || analyzing || downloading) {
-      return;
+      return; // undefined
     }
 
     const id = ++requestId.current;
@@ -113,7 +127,7 @@ function App() {
     }
   };
 
-  // Streaming progress from yt-dlp/FFmpeg, subscribed once for the app.
+  // Streaming progress from yt-dlp/FFmpeg, subscribed once for the app [].
   useEffect(() => {
     let unsubscribe: UnlistenFn | null = null;
     let active = true;
@@ -128,7 +142,7 @@ function App() {
     })
       .then((unlisten) => {
         if (active) {
-          unsubscribe = unlisten;
+          unsubscribe = unlisten; // Store the unsubscribe function for cleanup when the component unmounts.
         } else {
           // The component unmounted before the subscription resolved.
           unlisten();
@@ -137,10 +151,10 @@ function App() {
       .catch((caught) => {
         console.error("Failed to subscribe to download progress:", caught);
       });
-
+    // Cleanup function: Unsubscribe from the progress events when the component unmounts.
     return () => {
       active = false;
-      unsubscribe?.();
+      unsubscribe?.(); // Call the unsubscribe function to stop receiving progress updates when the component unmounts.
     };
   }, []);
 
@@ -149,6 +163,7 @@ function App() {
    * report an existing file; the user can then retry with `rename`.
    */
   const startDownload = async (conflictMode: ConflictMode) => {
+    // Guard: Ensure that the download is only initiated when all necessary conditions are met.
     if (!media || format === null || downloading) {
       return;
     }
@@ -164,7 +179,7 @@ function App() {
       conflict: conflictMode,
       directory,
     };
-
+    // Reset the download state before starting a new download.
     setDownloading(true);
     setDownloadError(null);
     setDownloadMessage(null);
@@ -201,9 +216,8 @@ function App() {
 
   const handleDirectoryChange = (next: DirectorySelection) => {
     setDirectory((current) => ({
-      ...next,
-      // Keep the last picked folder when toggling Default ↔ Custom.
-      path: next.mode === "custom" ? (next.path ?? current.path) : current.path,
+      ...next, // JS spread operator: Copies all properties from the `next` object
+      path: next.mode === "custom" ? (next.path ?? current.path) : current.path, // `??` operator: If `next.path` is not null or undefined, use it; otherwise, use `current.path`.
     }));
   };
 
@@ -228,16 +242,17 @@ function App() {
 
   // Analyze a supported URL automatically after the user stops typing.
   useEffect(() => {
+    // Guard: Ensure that the analysis is only initiated when all necessary conditions are met.
     if (!supported || media !== null || analyzing || error !== null) {
       return;
     }
 
     const timer = window.setTimeout(() => {
-      void runAnalyze();
+      void runAnalyze(); // Typescript: The void keyword asserts that the returned value should be treated as undefined.
     }, AUTO_ANALYZE_DELAY_MS);
-
-    return () => window.clearTimeout(timer);
-  }, [url, supported, media, analyzing, error]);
+    // Cleanup Function: Clear the timeout if the component unmounts or if the dependencies change before the timeout completes
+    return () => window.clearTimeout(timer); // () => means it returns nothing, just clears the timer.
+  }, [url, supported, media, analyzing, error]); // Dependency Array: The effect will re-run whenever any of these values change.
 
   // Keep the format valid whenever the type, duration or platform changes
   // (GIF is limited to short videos and never offered for YouTube).
@@ -253,8 +268,7 @@ function App() {
     );
   }, [mediaType, duration, platform]);
 
-  const hasDirectory =
-    directory.mode === "default" || Boolean(directory.path);
+  const hasDirectory = directory.mode === "default" || Boolean(directory.path);
 
   return (
     <main className="container">

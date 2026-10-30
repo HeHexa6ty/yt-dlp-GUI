@@ -15,7 +15,10 @@ export interface BackendError {
   code: string;
   message: string;
 }
-
+/**
+ * Type guard to check if a given value is a `BackendError`.
+ * @returns True if the value is a `BackendError`, otherwise false.
+ */
 function isBackendError(value: unknown): value is BackendError {
   return (
     typeof value === "object" &&
