@@ -39,12 +39,17 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "createUpdaterArtifacts": true
+
   },
   "plugins": {
     "updater": {
       "requireSignedVersion": true,
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDYxOTVCREY3Q0VCRkMxMzcKUldRM3diL085NzJWWVc3cjN4TlJRTDRpeGlubGVMLzBGVEFiNHhpM2orbXdCM2Y5TXpySU5mNngK"
+      "pubkey": "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUEwdFBtZyt6ZE1XbnJ6TXFmaElyNwpZRzJRLzY1VXNkdDJwRXFRaEI4Y3Z4MklXZjNNcnNuQlNBZnJ6dEU2RithZ2tpWHdnYlE1QlIxc0xsWnZnY1owCmR1Zzd3QnI0cFh0RlJpSUdzVU1kSTBnMUZNeG1xcWE1RlhlNkEzckRFS25UOUJLeW5IV3FEcmpUQklMVnNKb1EKdW1FRWpsMnk5aTZ2Z0I0OFgwemh4TFBZV1BKZnJlcGZONEFXSXY4d2p6ZWhGVzd3RU1BR2F0bC84WGpBY2RVcApJUnFmc1dWYU9WMWhHWUxLRjZDcUQvdGltcExidHRWSkNPanU3SnluUHdqR3d1SllGWURFQUh3WkhLVU1XZEtsCmJ3WVZGQUJYSGRQbXZyWDVrVkdvZ1lPQXAwaFFTbTNXeDNjTnpMSGFmRjdkYWg1Z0NaZ3picE9wZmFZOHBka3MKSVFJREFRQUIKLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==",
+      "endpoints": [
+        "https://github.com/HeHexa6ty/yt-dlp-GUI/releases/latest/download/latest.json"
+      ]
     }
   }
 }
