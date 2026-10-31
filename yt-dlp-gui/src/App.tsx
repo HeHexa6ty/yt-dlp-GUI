@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 // Tauri Dialog Plugin:
 import { open } from "@tauri-apps/plugin-dialog";
+// Tauri Clipboard Plugin:
+import { readText } from "@tauri-apps/plugin-clipboard-manager";
 // Tauri Event Types:
 import type { UnlistenFn } from "@tauri-apps/api/event";
 // Custom Components:
@@ -11,6 +13,7 @@ import DownloadButton from "./components/DownloadButton";
 import DownloadStatus from "./components/DownloadStatus";
 import MediaPreview from "./components/MediaPreview";
 import MediaTypeSelector from "./components/MediaTypeSelector";
+import PasteButton from "./components/PasteButton";
 import UrlInput from "./components/UrlInput";
 // Custom Services:
 import {
@@ -55,6 +58,9 @@ const INITIAL_PROGRESS: ProgressState = {
 
 function App() {
   const [url, setUrl] = useState("");
+  // Bumped on every URL update so the auto-analyze effect also runs when the
+  // new value is identical (for example, pasting the same link again).
+  const [urlRevision, setUrlRevision] = useState(0);
   // TypeScript specific: useState with <> returns null or MediaInfo and only these types
   const [media, setMedia] = useState<MediaInfo | null>(null);
   const [format, setFormat] = useState<OutputFormat | null>(null);
@@ -74,16 +80,21 @@ function App() {
 
   // Identifies the newest analysis so late responses cannot overwrite state.
   const requestId = useRef(0);
+  // Set when a paste event arrives, so the URL can be analyzed immediately
+  // instead of waiting for the typing debounce.
+  const pasteRequested = useRef(false);
+  const analyzeImmediately = useRef(false);
 
   const supported = isSupportedUrl(url);
   const mediaType = media?.mediaType ?? null;
   const platform = media?.platform ?? null;
   const duration = media?.duration ?? null;
 
-  const handleUrlChange = (value: string) => {
+  const applyUrl = (value: string, immediate: boolean) => {
+    analyzeImmediately.current = immediate;
     // Invalidate any analysis that is still running for the old URL.
     // Purpose: This line ensures that any ongoing analysis or operations associated with the old URL are invalidated or ignored when a new URL is entered.
-    requestId.current += 1; 
+    requestId.current += 1;
     setUrl(value);
     setMedia(null);
     setFormat(null);
@@ -94,6 +105,34 @@ function App() {
     setDownloadError(null);
     setConflict(null);
     setProgress(INITIAL_PROGRESS);
+    setUrlRevision((revision) => revision + 1);
+  };
+
+  const handleUrlChange = (value: string) => {
+    const fromPaste = pasteRequested.current;
+    pasteRequested.current = false;
+    applyUrl(value, fromPaste);
+  };
+
+  const handleUrlPaste = () => {
+    // `onPaste` fires before `onChange`. Remember it so the resulting URL is
+    // analyzed without the typing debounce. If the paste did not change the
+    // value, no change event follows, so drop the flag again.
+    pasteRequested.current = true;
+    window.setTimeout(() => {
+      pasteRequested.current = false;
+    }, 300);
+  };
+
+  const handlePasteFromClipboard = async () => {
+    try {
+      const text = (await readText()).trim();
+      if (text !== "") {
+        applyUrl(text, true);
+      }
+    } catch (caught) {
+      console.error("Failed to read the clipboard:", caught);
+    }
   };
 
   const runAnalyze = async () => {
@@ -241,7 +280,13 @@ function App() {
   };
 
   // Analyze a supported URL automatically after the user stops typing.
+  // Pasted URLs skip the debounce and are analyzed right away.
   useEffect(() => {
+    // Consume the flag on every run, so a paste that is not analyzed now (for
+    // example an unsupported URL) cannot make a later manual edit instant.
+    const immediate = analyzeImmediately.current;
+    analyzeImmediately.current = false;
+
     // Guard: Ensure that the analysis is only initiated when all necessary conditions are met.
     if (!supported || media !== null || analyzing || error !== null) {
       return;
@@ -249,10 +294,10 @@ function App() {
 
     const timer = window.setTimeout(() => {
       void runAnalyze(); // Typescript: The void keyword asserts that the returned value should be treated as undefined.
-    }, AUTO_ANALYZE_DELAY_MS);
+    }, immediate ? 0 : AUTO_ANALYZE_DELAY_MS);
     // Cleanup Function: Clear the timeout if the component unmounts or if the dependencies change before the timeout completes
     return () => window.clearTimeout(timer); // () => means it returns nothing, just clears the timer.
-  }, [url, supported, media, analyzing, error]); // Dependency Array: The effect will re-run whenever any of these values change.
+  }, [url, urlRevision, supported, media, analyzing, error]); // Dependency Array: The effect will re-run whenever any of these values change.
 
   // Keep the format valid whenever the type, duration or platform changes
   // (GIF is limited to short videos and never offered for YouTube).
@@ -278,6 +323,13 @@ function App() {
         <UrlInput
           value={url}
           onChange={handleUrlChange}
+          onPaste={handleUrlPaste}
+          disabled={downloading}
+        />
+        <PasteButton
+          onClick={() => {
+            void handlePasteFromClipboard();
+          }}
           disabled={downloading}
         />
         <AnalyzeButton
