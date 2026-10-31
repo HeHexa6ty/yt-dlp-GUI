@@ -31,3 +31,7 @@ notes
 
 # yt-dlp
 yt-dlp-gui/ffmpeg-master-latest-win64-gpl.zip
+
+# Windows ffmpeg
+yt-dlp-gui/src-tauri/binaries/ffmpeg-sidecar-x86_64-pc-windows-msvc.exe
+yt-dlp-gui/src-tauri/binaries/ffprobe-sidecar-x86_64-pc-windows-msvc.exe
