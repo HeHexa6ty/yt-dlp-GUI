@@ -1,0 +1,37 @@
+.paste-button {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  padding: 0;
+  border: 1px solid #555;
+  border-radius: 8px;
+  color: #ffffff;
+  background-color: transparent;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    opacity 0.15s,
+    background-color 0.15s;
+}
+
+.paste-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.paste-button:active:not(:disabled) {
+  transform: translateY(0);
+  background-color: rgba(255, 255, 255, 0.16);
+}
+
+.paste-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.paste-button svg {
+  width: 20px;
+  height: 20px;
+}
