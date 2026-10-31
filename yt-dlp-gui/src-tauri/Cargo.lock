@@ -4225,7 +4225,7 @@ dependencies = [
 
 [[package]]
 name = "tauri-ytdlp-gui"
-version = "0.1.0"
+version = "0.1.3"
 dependencies = [
  "dirs",
  "serde",
