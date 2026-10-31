@@ -7,12 +7,14 @@ and into the platform bundle.
 | Sidecar | Version | Source | License |
 | --- | --- | --- | --- |
 | `yt-dlp-sidecar` | 2026.10.26 | <https://github.com/yt-dlp/yt-dlp/releases/tag/2026.10.26> (`yt-dlp_linux`) | Unlicense, see `yt-dlp-LICENSE.txt` |
-| `ffmpeg-sidecar` | 6.1.1 | <https://github.com/wader/static-ffmpeg> (`mwader/static-ffmpeg:6.1.1`) | GPLv3, see `ffmpeg-GPLv3.txt` |
-| `ffprobe-sidecar` | 6.1.1 | <https://github.com/wader/static-ffmpeg> (`mwader/static-ffmpeg:6.1.1`) | GPLv3, see `ffmpeg-GPLv3.txt` |
+| `ffmpeg-sidecar` | 7.0.2 | <https://johnvansickle.com/ffmpeg/> (`ffmpeg-release-amd64-static`) | GPLv3, see `ffmpeg-GPLv3.txt` |
+| `ffprobe-sidecar` | 7.0.2 | <https://johnvansickle.com/ffmpeg/> (`ffmpeg-release-amd64-static`) | GPLv3, see `ffmpeg-GPLv3.txt` |
 
-The FFmpeg/ffprobe binaries are static musl builds from the `mwader/static-ffmpeg`
-image. The FFmpeg source for version 6.1.1 is available at
-<https://ffmpeg.org/releases/ffmpeg-6.1.1.tar.xz>.
+The FFmpeg/ffprobe binaries are statically linked, non-PIE (ET_EXEC) amd64
+builds from johnvansickle.com. Keep them non-PIE: the AppImage bundler runs
+`patchelf` on every ELF executable in the AppDir, and that corrupts static-PIE
+binaries so they segfault at startup. The FFmpeg source for version 7.0.2 is
+available at <https://ffmpeg.org/releases/ffmpeg-7.0.2.tar.xz>.
 
 The target-triple suffix is required by Tauri's `bundle.externalBin` setting:
 
@@ -28,8 +30,8 @@ SHA-256 checksums:
 
 ```text
 767ba9dce7052aa196f8b12652f433d76de128ba168966fa84b6394d5e6c6795  yt-dlp-sidecar-x86_64-unknown-linux-gnu
-dcf4c806caad507b11c73754b86a8cbd0ce686ae12f90bf8ba235d145f53edc0  ffmpeg-sidecar-x86_64-unknown-linux-gnu
-aef7126f9c9845cdb8692c1dfd3c9eb74016210a68f8534325cf9f9a631cf9f1  ffprobe-sidecar-x86_64-unknown-linux-gnu
+e7e7fb30477f717e6f55f9180a70386c62677ef8a4d4d1a5d948f4098aa3eb99  ffmpeg-sidecar-x86_64-unknown-linux-gnu
+4f231a1960d83e403d08f7971e271707bec278a9ae18e21b8b5b03186668450d  ffprobe-sidecar-x86_64-unknown-linux-gnu
 ```
 
 ## Updating
