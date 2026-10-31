@@ -42,46 +42,101 @@ fn sidecar_candidate(executable: &Path, name: &str) -> Option<PathBuf> {
     path.is_file().then_some(path)
 }
 
+/// Directory holding the sidecars committed under `src-tauri/binaries`. `tauri
+/// dev` and `cargo run` start from the source tree, where the files still carry
+/// the target triple; packaged builds get them next to the executable instead.
+fn source_binaries_dir() -> Option<PathBuf> {
+    let mut dir = std::env::current_dir().ok()?;
+    for _ in 0..4 {
+        for candidate in [dir.join("binaries"), dir.join("src-tauri").join("binaries")] {
+            if candidate.is_dir() {
+                return Some(candidate);
+            }
+        }
+        if !dir.pop() {
+            break;
+        }
+    }
+    None
+}
+
+/// Finds a sidecar in the source tree, where files are named
+/// `<name>-<target-triple>` (plus `.exe` on Windows). Tauri strips the triple
+/// when it copies them next to the executable, so only this directory needs the
+/// prefix match.
+fn sidecar_in_dir(dir: &Path, name: &str) -> Option<PathBuf> {
+    let prefix = format!("{name}-");
+    let mut matches: Vec<PathBuf> = std::fs::read_dir(dir)
+        .ok()?
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .filter(|path| path.is_file())
+        .filter(|path| {
+            path.file_name()
+                .and_then(|file_name| file_name.to_str())
+                .is_some_and(|file_name| file_name.starts_with(prefix.as_str()))
+        })
+        .filter(|path| {
+            let is_exe = path.extension().is_some_and(|extension| extension == "exe");
+            is_exe == cfg!(windows)
+        })
+        .collect();
+
+    matches.sort();
+    matches.into_iter().next()
+}
+
+/// Resolves a bundled sidecar. Development builds prefer the checked-in
+/// `src-tauri/binaries` directory so edits to those files take effect
+/// immediately; packaged builds use the copy Tauri placed next to the
+/// executable.
 fn bundled_sidecar(name: &str) -> Option<PathBuf> {
+    if cfg!(debug_assertions) {
+        if let Some(path) = source_binaries_dir().and_then(|dir| sidecar_in_dir(&dir, name)) {
+            return Some(path);
+        }
+    }
+
     let executable = std::env::current_exe().ok()?;
     sidecar_candidate(&executable, name)
 }
 
 /// Picks the first available tool path: explicit override, bundled sidecar,
-/// then the system PATH fallback.
+/// then the sidecar name itself. The system tool is deliberately not used, so
+/// a missing sidecar fails loudly instead of silently running a different
+/// FFmpeg/yt-dlp from `PATH`.
 fn choose_tool_path(
     override_path: Option<PathBuf>,
     sidecar: Option<PathBuf>,
-    fallback: &str,
+    sidecar_name: &str,
 ) -> PathBuf {
     override_path
         .or(sidecar)
-        .unwrap_or_else(|| PathBuf::from(fallback))
+        .unwrap_or_else(|| PathBuf::from(sidecar_name))
 }
 
-fn resolve_tool(env_var: &str, sidecar_name: &str, fallback: &str) -> PathBuf {
+fn resolve_tool(env_var: &str, sidecar_name: &str) -> PathBuf {
     choose_tool_path(
         std::env::var_os(env_var).map(PathBuf::from),
         bundled_sidecar(sidecar_name),
-        fallback,
+        sidecar_name,
     )
 }
 
-/// Path to the yt-dlp binary: `YT_DLP_PATH`, the bundled sidecar, then PATH.
+/// Path to the yt-dlp binary: `YT_DLP_PATH` or the bundled sidecar.
 pub fn yt_dlp_path() -> PathBuf {
-    resolve_tool("YT_DLP_PATH", "yt-dlp-sidecar", "yt-dlp")
+    resolve_tool("YT_DLP_PATH", "yt-dlp-sidecar")
 }
 
-/// Path to the FFmpeg binary: `FFMPEG_PATH`, the bundled sidecar, then PATH.
+/// Path to the FFmpeg binary: `FFMPEG_PATH` or the bundled sidecar.
 pub fn ffmpeg_path() -> PathBuf {
-    resolve_tool("FFMPEG_PATH", "ffmpeg-sidecar", "ffmpeg")
+    resolve_tool("FFMPEG_PATH", "ffmpeg-sidecar")
 }
 
-/// Path to ffprobe: `FFPROBE_PATH`, the bundled sidecar, then PATH. It is only
-/// used to fill in missing durations so the GIF length limit can still be
-/// applied.
+/// Path to ffprobe: `FFPROBE_PATH` or the bundled sidecar. It is only used to
+/// fill in missing durations so the GIF length limit can still be applied.
 pub fn ffprobe_path() -> PathBuf {
-    resolve_tool("FFPROBE_PATH", "ffprobe-sidecar", "ffprobe")
+    resolve_tool("FFPROBE_PATH", "ffprobe-sidecar")
 }
 
 /// Builds the yt-dlp command. The bundled sidecar wins over a system install;
@@ -528,33 +583,46 @@ mod tests {
     }
 
     #[test]
-    fn prefers_an_override_then_the_sidecar_then_path() {
+    fn prefers_an_override_then_the_sidecar_then_the_sidecar_name() {
         let override_path = PathBuf::from("/custom/yt-dlp");
         let sidecar = PathBuf::from("/bundle/yt-dlp-sidecar");
 
         assert_eq!(
-            choose_tool_path(Some(override_path.clone()), Some(sidecar.clone()), "yt-dlp"),
+            choose_tool_path(
+                Some(override_path.clone()),
+                Some(sidecar.clone()),
+                "yt-dlp-sidecar"
+            ),
             override_path
         );
         assert_eq!(
-            choose_tool_path(None, Some(sidecar.clone()), "yt-dlp"),
+            choose_tool_path(None, Some(sidecar.clone()), "yt-dlp-sidecar"),
             sidecar
         );
+        // Never falls back to the system tool, only to the sidecar name.
         assert_eq!(
-            choose_tool_path(None, None, "yt-dlp"),
-            PathBuf::from("yt-dlp")
+            choose_tool_path(None, None, "yt-dlp-sidecar"),
+            PathBuf::from("yt-dlp-sidecar")
         );
     }
 
     #[test]
-    fn bundled_sidecars_are_copied_next_to_the_test_binary() {
-        // tauri-build copies configured sidecars to target/debug before tests.
-        // If they are absent, the resolver falls back to PATH, so only assert
-        // when the packaged sidecars are present.
-        if bundled_sidecar("yt-dlp-sidecar").is_none() {
-            return;
-        }
+    fn finds_a_target_suffixed_sidecar_in_the_source_tree() {
+        let dir = sidecar_test_dir();
+        std::fs::create_dir_all(&dir).expect("temp directory should be created");
+        let sidecar = dir.join(sidecar_file_name("ffmpeg-sidecar-test-triple"));
+        std::fs::write(&sidecar, b"x").expect("sidecar file should be written");
 
+        assert_eq!(sidecar_in_dir(&dir, "ffmpeg-sidecar"), Some(sidecar));
+
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn bundled_sidecars_are_available_to_the_test_binary() {
+        // Development builds resolve the checked-in `src-tauri/binaries`
+        // directory, so the sidecars should always be found there.
+        assert!(bundled_sidecar("yt-dlp-sidecar").is_some());
         assert!(bundled_sidecar("ffmpeg-sidecar").is_some());
         assert!(bundled_sidecar("ffprobe-sidecar").is_some());
     }
