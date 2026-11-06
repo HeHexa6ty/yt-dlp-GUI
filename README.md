@@ -22,7 +22,7 @@ Instead of using command-line tools, users can paste a URL, select their preferr
 | Platform | Status                      |
 | -------- | --------------------------- |
 | Linux    | 🚧 In development           |
-| Windows  | 📋 Planned                  |
+| Windows  | 📋 Early development        |
 | Android  | 📋 Planned                  |
 | macOS    | 💡 Not Planned |
 
@@ -63,8 +63,8 @@ See the [Tauri prerequisites documentation](https://v2.tauri.app/start/prerequis
 Clone the repository:
 
 ```bash
-git clone https://github.com/HeHexa6ty/Tauri-yt-dlp-GUI
-cd tauri-ytdlp-gui
+git clone https://github.com/HeHexa6ty/yt-dlp-GUI
+cd yt-dlp-gui
 ```
 
 Install dependencies:
@@ -129,8 +129,8 @@ All media processing is intended to run locally, without requiring a dedicated d
 - [X] Implement download progress tracking
 - [ ] ~~Add download queue management~~
 - [X] Implement application settings
-- [ ] Package the application for Linux
-- [ ] Add Windows support
+- [X] Package the application for Linux
+- [X] Add Windows support
 - [ ] Investigate Android support
 
 ### Possible features in future
