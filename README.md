@@ -63,8 +63,8 @@ See the [Tauri prerequisites documentation](https://v2.tauri.app/start/prerequis
 Clone the repository:
 
 ```bash
-git clone https://github.com/HeHexa6ty/Tauri-yt-dlp-GUI
-cd tauri-ytdlp-gui
+git clone https://github.com/HeHexa6ty/yt-dlp-GUI
+cd yt-dlp-GUI/yt-dlp-gui
 ```
 
 Install dependencies:
@@ -91,7 +91,8 @@ Builds are platform-specific and require the appropriate toolchain and dependenc
 
 ### How to run tests
 
-```cd tauri-ytdlp-gui/src-tauri
+```bash
+cd yt-dlp-gui/src-tauri
 cargo test --lib verify_test_set -- --ignored --nocapture
 ```
 
@@ -147,7 +148,23 @@ Users are responsible for ensuring that downloading and using media complies wit
 
 ## License
 
-License to be determined.
+The source code of this project is licensed under the [MIT License](LICENSE).
+
+The application bundles or distributes the following third-party components, which
+keep their own licenses:
+
+| Component | License |
+| --- | --- |
+| [yt-dlp](https://github.com/yt-dlp/yt-dlp) | [Unlicense](THIRD-PARTY-LICENSES/yt-dlp-LICENSE.txt) (public domain) |
+| [FFmpeg](https://ffmpeg.org/) and ffprobe | [GPL-3.0-or-later](THIRD-PARTY-LICENSES/ffmpeg-GPLv3.txt) |
+| [Tauri](https://tauri.app/) | [MIT](THIRD-PARTY-LICENSES/tauri-MIT.txt) / Apache-2.0 |
+
+See [`THIRD-PARTY-LICENSES/`](THIRD-PARTY-LICENSES/) for the full license texts.
+The written offer for the corresponding source of the GPLv3 FFmpeg/ffprobe
+binaries is in [`THIRD-PARTY-LICENSES/SOURCE-OFFER.md`](THIRD-PARTY-LICENSES/SOURCE-OFFER.md).
+
+The MIT license applies only to this project's own code. It does not apply to the
+bundled yt-dlp, FFmpeg, or ffprobe executables.
 
 ---
 

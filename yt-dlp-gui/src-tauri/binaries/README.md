@@ -7,8 +7,14 @@ and into the platform bundle.
 | Sidecar | Version | Source | License |
 | --- | --- | --- | --- |
 | `yt-dlp-sidecar` | 2026.10.26 | <https://github.com/yt-dlp/yt-dlp/releases/tag/2026.10.26> (`yt-dlp_linux`) | Unlicense, see `yt-dlp-LICENSE.txt` |
-| `ffmpeg-sidecar` | 7.0.2 | <https://johnvansickle.com/ffmpeg/> (`ffmpeg-release-amd64-static`) | GPLv3, see `ffmpeg-GPLv3.txt` |
-| `ffprobe-sidecar` | 7.0.2 | <https://johnvansickle.com/ffmpeg/> (`ffmpeg-release-amd64-static`) | GPLv3, see `ffmpeg-GPLv3.txt` |
+| `ffmpeg-sidecar` | 7.0.2 | <https://johnvansickle.com/ffmpeg/> (`ffmpeg-release-amd64-static`) | GPL-3.0-or-later, see `ffmpeg-GPLv3.txt` |
+| `ffprobe-sidecar` | 7.0.2 | <https://johnvansickle.com/ffmpeg/> (`ffmpeg-release-amd64-static`) | GPL-3.0-or-later, see `ffmpeg-GPLv3.txt` |
+
+The FFmpeg/ffprobe builds use `--enable-gpl --enable-version3`, so the binaries
+are GPLv3-or-later. See
+[`../../../THIRD-PARTY-LICENSES/README.md`](../../../THIRD-PARTY-LICENSES/README.md)
+for corresponding-source information. The MIT license of this project does not
+apply to these binaries.
 
 The FFmpeg/ffprobe binaries are statically linked, non-PIE (ET_EXEC) amd64
 builds from johnvansickle.com. Keep them non-PIE: the AppImage bundler runs
@@ -38,5 +44,12 @@ e7e7fb30477f717e6f55f9180a70386c62677ef8a4d4d1a5d948f4098aa3eb99  ffmpeg-sidecar
 
 Replace the target-triple-suffixed files with the matching release assets and
 update the versions and checksums above. For Windows, use the
-`x86_64-pc-windows-msvc` suffix and the `.exe` assets. For macOS, use the
+`x86_64-pc-windows-msvc` suffix and the `.exe` assets from the
+`GyanD/codexffmpeg` release tag matching `FFMPEG_VERSION`
+(<https://github.com/GyanD/codexffmpeg/releases>). For macOS, use the
 `x86_64-apple-darwin` or `aarch64-apple-darwin` suffix.
+
+The release workflow records `ffmpeg -version` and `ffmpeg -buildconf` for each
+platform and attaches them, together with the FFmpeg source archive, to the
+GitHub release. See
+[`SOURCE-OFFER.md`](../../../THIRD-PARTY-LICENSES/SOURCE-OFFER.md).

@@ -2,6 +2,12 @@
   "name": "tauri-ytdlp-gui",
   "private": true,
   "version": "0.1.4",
+  "description": "A cross-platform Tauri GUI for yt-dlp",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HeHexa6ty/yt-dlp-GUI"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",

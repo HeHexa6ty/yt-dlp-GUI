@@ -23,8 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
-# Test results
-Tests/Results/
+# Test results (downloaded media and generated reports)
+**/Tests/Results/
 
 # Notes
 notes
