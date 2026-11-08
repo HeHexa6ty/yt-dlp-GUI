@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.1.4",
   "description": "A cross-platform Tauri GUI for yt-dlp",
+  "author": "Kamil Gabrysiewicz (HeHexa6ty)",
   "license": "MIT",
   "repository": {
     "type": "git",

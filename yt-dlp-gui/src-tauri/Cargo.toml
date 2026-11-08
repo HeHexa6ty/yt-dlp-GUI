@@ -2,7 +2,7 @@
 name = "tauri-ytdlp-gui"
 version = "0.1.4"
 description = "A cross-platform Tauri GUI for yt-dlp"
-authors = ["HeHexa6ty"]
+authors = ["Kamil Gabrysiewicz (HeHexa6ty)"]
 license = "MIT"
 repository = "https://github.com/HeHexa6ty/yt-dlp-GUI"
 edition = "2024"

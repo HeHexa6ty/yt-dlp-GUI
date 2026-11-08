@@ -18,7 +18,9 @@ The FFmpeg source for version 7.0.2 is available from:
 - <https://ffmpeg.org/releases/ffmpeg-7.0.2.tar.xz>
 - <https://ffmpeg.org/releases/ffmpeg-7.0.2.tar.xz.asc> (signature)
 
-Every GitHub release of this project also has the following assets attached:
+Releases built by the workflow in
+[`.github/workflows/release.yml`](../.github/workflows/release.yml) attach the
+following assets:
 
 - `ffmpeg-7.0.2.tar.xz` and `ffmpeg-7.0.2.tar.xz.asc`
 - `ffmpeg-buildconf-linux.txt` — `ffmpeg -version` and `ffmpeg -buildconf` output
@@ -33,6 +35,11 @@ binaries.
 - Linux builds: published by <https://johnvansickle.com/ffmpeg/>.
 - Windows builds: <https://github.com/GyanD/codexffmpeg> and the release
   workflow in [`.github/workflows/release.yml`](../.github/workflows/release.yml).
+
+Releases up to and including v0.1.4 used the Windows FFmpeg build from
+<https://github.com/BtbN/FFmpeg-Builds>. The source and build scripts for those
+builds are available from that repository; if you need a specific older build,
+use the contact details below.
 
 ## Complete corresponding source
 
