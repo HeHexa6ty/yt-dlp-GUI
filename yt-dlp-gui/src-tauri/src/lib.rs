@@ -2,6 +2,7 @@
 mod commands;
 mod download;
 mod error;
+mod ffmpeg;
 mod models;
 mod paths;
 #[cfg(test)]
@@ -25,7 +26,11 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             greet,
             commands::analyze_url,
-            commands::download_media
+            commands::download_media,
+            ffmpeg::ffmpeg_status,
+            ffmpeg::ffmpeg_set_path,
+            ffmpeg::ffmpeg_clear_path,
+            ffmpeg::ffmpeg_install
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

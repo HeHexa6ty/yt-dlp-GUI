@@ -58,6 +58,10 @@ To develop the application locally, install:
 
 See the [Tauri prerequisites documentation](https://v2.tauri.app/start/prerequisites/) for platform-specific requirements.
 
+FFmpeg is required for merging video/audio, MP3 extraction, and GIF/image
+conversion. It is not bundled. If it is missing, open the **FFmpeg** tab in the
+application to detect, install, or select an existing binary.
+
 ### Installation
 
 Clone the repository:
@@ -150,21 +154,24 @@ Users are responsible for ensuring that downloading and using media complies wit
 
 The source code of this project is licensed under the [MIT License](LICENSE).
 
-The application bundles or distributes the following third-party components, which
-keep their own licenses:
+The application bundles the following third-party component, which keeps its
+own license:
 
 | Component | License |
 | --- | --- |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp) | [Unlicense](THIRD-PARTY-LICENSES/yt-dlp-LICENSE.txt) (public domain) |
-| [FFmpeg](https://ffmpeg.org/) and ffprobe | [GPL-3.0-or-later](THIRD-PARTY-LICENSES/ffmpeg-GPLv3.txt) |
 | [Tauri](https://tauri.app/) | [MIT](THIRD-PARTY-LICENSES/tauri-MIT.txt) / Apache-2.0 |
 
-See [`THIRD-PARTY-LICENSES/`](THIRD-PARTY-LICENSES/) for the full license texts.
-The written offer for the corresponding source of the GPLv3 FFmpeg/ffprobe
-binaries is in [`THIRD-PARTY-LICENSES/SOURCE-OFFER.md`](THIRD-PARTY-LICENSES/SOURCE-OFFER.md).
+[FFmpeg](https://ffmpeg.org/) and `ffprobe` are **not bundled**. They are
+runtime dependencies that stay on the user's system and are installed through
+the FFmpeg tab or the platform package manager. FFmpeg builds keep their own
+license (often GPL-3.0-or-later, sometimes LGPL); see
+[`THIRD-PARTY-LICENSES/README.md`](THIRD-PARTY-LICENSES/README.md).
 
-The MIT license applies only to this project's own code. It does not apply to the
-bundled yt-dlp, FFmpeg, or ffprobe executables.
+See [`THIRD-PARTY-LICENSES/`](THIRD-PARTY-LICENSES/) for the license texts.
+
+The MIT license applies only to this project's own code. It does not apply to
+the bundled yt-dlp executable or to a user-installed FFmpeg.
 
 ---
 

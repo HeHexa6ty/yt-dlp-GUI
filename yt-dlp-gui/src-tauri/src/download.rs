@@ -262,10 +262,10 @@ fn format_args(format: OutputFormat) -> Vec<String> {
     }
 }
 
-/// Points yt-dlp at the bundled FFmpeg when we have a concrete path. The
-/// sidecar directory also contains `ffprobe-sidecar`; yt-dlp discovers it by
-/// replacing `ffmpeg` with `ffprobe` in the file name. A bare `ffmpeg` command
-/// is left alone so yt-dlp can resolve it from PATH.
+/// Points yt-dlp at the configured FFmpeg when we have a concrete path. yt-dlp
+/// discovers ffprobe next to that binary by replacing `ffmpeg` with `ffprobe` in
+/// the file name. A bare `ffmpeg` command is left alone so yt-dlp can resolve it
+/// from PATH.
 fn apply_ffmpeg_location(command: &mut Command) {
     let ffmpeg = ffmpeg_path();
     let location = if ffmpeg.is_absolute() {
@@ -284,10 +284,12 @@ fn apply_ffmpeg_location(command: &mut Command) {
 /// Maps a spawn failure onto a user-facing error.
 fn map_spawn_error(error: std::io::Error, binary: &str, code: &'static str) -> AppError {
     if error.kind() == std::io::ErrorKind::NotFound {
-        AppError::new(
-            code,
-            format!("{binary} was not found. Reinstall the app or set the matching path variable."),
-        )
+        let message = if code == "ffmpeg-missing" {
+            crate::ffmpeg::MISSING_MESSAGE.to_string()
+        } else {
+            format!("{binary} was not found. Reinstall the app or set the matching path variable.")
+        };
+        AppError::new(code, message)
     } else {
         AppError::new(code, format!("Could not run {binary}: {error}"))
     }
@@ -314,6 +316,12 @@ fn map_ytdlp_stderr(stderr: &str) -> AppError {
     // something a user should have to decode.
     if message.contains("unable to obtain file audio codec with ffprobe") {
         return AppError::new("no-audio", "This video has no audio track to extract.");
+    }
+
+    let lower = message.to_lowercase();
+    if lower.contains("ffmpeg") && (lower.contains("not found") || lower.contains("not installed"))
+    {
+        return AppError::new("ffmpeg-missing", crate::ffmpeg::MISSING_MESSAGE);
     }
 
     AppError::new("download-failed", message)
@@ -1018,6 +1026,16 @@ mod tests {
 
         assert_eq!(error.code, "no-audio");
         assert_eq!(error.message, "This video has no audio track to extract.");
+    }
+
+    #[test]
+    fn maps_a_missing_ffmpeg_to_a_clear_message() {
+        let error = map_ytdlp_stderr(
+            "ERROR: Postprocessing: ffmpeg not found. Please install or provide the path using --ffmpeg-location",
+        );
+
+        assert_eq!(error.code, "ffmpeg-missing");
+        assert_eq!(error.message, crate::ffmpeg::MISSING_MESSAGE);
     }
 
     #[test]

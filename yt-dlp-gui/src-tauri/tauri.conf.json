@@ -29,9 +29,7 @@
     "active": true,
     "targets": "all",
     "externalBin": [
-      "binaries/yt-dlp-sidecar",
-      "binaries/ffmpeg-sidecar",
-      "binaries/ffprobe-sidecar"
+      "binaries/yt-dlp-sidecar"
     ],
     "resources": {
       "../../LICENSE": "LICENSE",

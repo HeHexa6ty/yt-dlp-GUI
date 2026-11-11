@@ -83,6 +83,38 @@ export interface DownloadResult {
   format: OutputFormat;
 }
 
+/** One way to install FFmpeg on the current platform. */
+export interface FfmpegInstaller {
+  /** Stable identifier passed to `installFfmpeg`. */
+  id: string;
+  /** Human-readable package manager name. */
+  label: string;
+  /** Whether the package manager (and any elevation helper) is available. */
+  available: boolean;
+  /** Command the user can run manually when automatic installation fails. */
+  command: string;
+}
+
+/** Result of looking for FFmpeg and ffprobe on the user's machine. */
+export interface FfmpegStatus {
+  /** Absolute path of the detected `ffmpeg` binary. */
+  path: string | null;
+  /** `environment`, `setting`, `PATH`, or `system`. */
+  source: string | null;
+  /** Short version, e.g. `7.0.2`. */
+  version: string | null;
+  /** Full first line printed by `ffmpeg -version`. */
+  versionLine: string | null;
+  /** Whether the build includes the MP3 encoder used for audio extraction. */
+  hasLibmp3lame: boolean;
+  ffprobePath: string | null;
+  ffprobeVersion: string | null;
+  /** `linux`, `windows`, or `macos`. */
+  platform: string;
+  installers: FfmpegInstaller[];
+  downloadUrl: string;
+}
+
 export const MEDIA_TYPE_OPTIONS: ReadonlyArray<{
   value: MediaType;
   label: string;

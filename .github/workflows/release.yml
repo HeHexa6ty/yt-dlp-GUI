@@ -1,4 +1,3 @@
-
 name: Release
 
 on:
@@ -8,10 +7,6 @@ on:
 
 permissions:
   contents: write
-
-env:
-  # Keep this in sync with the Linux sidecar version and with SOURCE-OFFER.md.
-  FFMPEG_VERSION: "7.0.2"
 
 jobs:
   publish:
@@ -48,42 +43,11 @@ jobs:
             libwebkit2gtk-4.1-dev \
             build-essential \
             curl \
-            wget \
             file \
             libxdo-dev \
             libssl-dev \
             libayatana-appindicator3-dev \
             librsvg2-dev
-
-      - name: Download Windows FFmpeg
-        if: matrix.platform == 'windows-latest'
-        shell: pwsh
-        run: |
-          $version = "${{ env.FFMPEG_VERSION }}"
-          Invoke-WebRequest `
-            -Uri "https://github.com/GyanD/codexffmpeg/releases/download/$version/ffmpeg-$version-full_build.zip" `
-            -OutFile "ffmpeg.zip"
-
-          Expand-Archive -Path "ffmpeg.zip" -DestinationPath "ffmpeg-temp"
-
-          $bin = "ffmpeg-temp/ffmpeg-$version-full_build/bin"
-          Copy-Item "$bin/ffmpeg.exe" "src-tauri/binaries/ffmpeg-sidecar-x86_64-pc-windows-msvc.exe"
-          Copy-Item "$bin/ffprobe.exe" "src-tauri/binaries/ffprobe-sidecar-x86_64-pc-windows-msvc.exe"
-
-      - name: Record FFmpeg build configuration (Linux)
-        if: matrix.platform == 'ubuntu-24.04'
-        run: |
-          {
-            ./src-tauri/binaries/ffmpeg-sidecar-x86_64-unknown-linux-gnu -version
-            ./src-tauri/binaries/ffmpeg-sidecar-x86_64-unknown-linux-gnu -buildconf
-          } > ffmpeg-buildconf-linux.txt
-
-      - name: Record FFmpeg build configuration (Windows)
-        if: matrix.platform == 'windows-latest'
-        shell: pwsh
-        run: |
-          & "src-tauri/binaries/ffmpeg-sidecar-x86_64-pc-windows-msvc.exe" -version | Out-File -Encoding utf8 "ffmpeg-buildconf-windows.txt"
-          & "src-tauri/binaries/ffmpeg-sidecar-x86_64-pc-windows-msvc.exe" -buildconf | Out-File -Append -Encoding utf8 "ffmpeg-buildconf-windows.txt"
 
       - name: Install frontend dependencies
         run: npm ci
@@ -97,34 +61,11 @@ jobs:
         with:
           tagName: v__VERSION__
           releaseName: "yt-dlp-GUI v__VERSION__"
-          releaseBody: "Download the installer for your platform below."
+          releaseBody: |
+            Download the installer for your platform below.
+
+            FFmpeg is not bundled. Install it separately or use the FFmpeg tab
+            in the application to detect, install, or select a binary.
           releaseDraft: true
           prerelease: false
           uploadUpdaterJson: true
-
-      - name: Attach FFmpeg corresponding source
-        if: matrix.platform == 'ubuntu-24.04'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          release_tag="v$(node -p 'require("./package.json").version')"
-          curl -fsSL -o "ffmpeg-${FFMPEG_VERSION}.tar.xz" \
-            "https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.xz"
-          curl -fsSL -o "ffmpeg-${FFMPEG_VERSION}.tar.xz.asc" \
-            "https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.xz.asc"
-          gh release upload "$release_tag" \
-            "ffmpeg-${FFMPEG_VERSION}.tar.xz" \
-            "ffmpeg-${FFMPEG_VERSION}.tar.xz.asc" \
-            ffmpeg-buildconf-linux.txt \
-            --clobber
-
-      - name: Attach FFmpeg build record
-        if: matrix.platform == 'windows-latest'
-        shell: pwsh
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          $releaseTag = "v" + (node -p 'require("./package.json").version')
-          gh release upload $releaseTag "ffmpeg-buildconf-windows.txt" --clobber
-          

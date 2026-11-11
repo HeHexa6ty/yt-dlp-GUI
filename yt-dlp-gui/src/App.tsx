@@ -1,391 +1,59 @@
-// React Hooks:
-import { useEffect, useRef, useState } from "react";
-// Tauri Dialog Plugin:
-import { open } from "@tauri-apps/plugin-dialog";
-// Tauri Clipboard Plugin:
-import { readText } from "@tauri-apps/plugin-clipboard-manager";
-// Tauri Event Types:
-import type { UnlistenFn } from "@tauri-apps/api/event";
-// Custom Components:
-import AnalyzeButton from "./components/AnalyzeButton";
-import DirectoryDiv from "./components/DirectoryDiv";
-import DownloadButton from "./components/DownloadButton";
-import DownloadStatus from "./components/DownloadStatus";
-import MediaPreview from "./components/MediaPreview";
-import MediaTypeSelector from "./components/MediaTypeSelector";
-import PasteButton from "./components/PasteButton";
-import UrlInput from "./components/UrlInput";
-// Custom Services:
-import {
-  analyzeUrl,
-  downloadMedia,
-  getBackendError,
-  getErrorMessage,
-  onDownloadProgress,
-} from "./services/tauri";
-// Custom Types:
-import {
-  getAvailableFormats,
-  type ConflictMode,
-  type DirectorySelection,
-  type DownloadRequest,
-  type GifQuality,
-  type MediaInfo,
-  type OutputFormat,
-} from "./types";
-// Utility Function:
-import { isSupportedUrl } from "./utils/url";
-// CSS Styles:
+import { useState } from "react";
+import FfmpegTab from "./components/FfmpegTab";
+import YtDlpTab from "./components/YtDlpTab";
 import "./App.css";
 
-/** Delay before a supported URL is analyzed automatically. */
-const AUTO_ANALYZE_DELAY_MS = 5000;
+type Tab = "yt-dlp" | "ffmpeg";
 
-/** Live download state shown under the download button. */
-interface ProgressState {
-  percent: number;
-  stage: "downloading" | "converting";
-  speed: number | null;
-  eta: number | null;
-}
-
-const INITIAL_PROGRESS: ProgressState = {
-  percent: 0,
-  stage: "downloading",
-  speed: null,
-  eta: null,
-};
+const TABS: ReadonlyArray<{ id: Tab; label: string }> = [
+  { id: "yt-dlp", label: "yt-dlp" },
+  { id: "ffmpeg", label: "FFmpeg" },
+];
 
 function App() {
-  const [url, setUrl] = useState("");
-  // Bumped on every URL update so the auto-analyze effect also runs when the
-  // new value is identical (for example, pasting the same link again).
-  const [urlRevision, setUrlRevision] = useState(0);
-  // TypeScript specific: useState with <> returns null or MediaInfo and only these types
-  const [media, setMedia] = useState<MediaInfo | null>(null);
-  const [format, setFormat] = useState<OutputFormat | null>(null);
-  const [gifQuality, setGifQuality] = useState<GifQuality>("better");
-  const [directory, setDirectory] = useState<DirectorySelection>({
-    mode: "default",
-  });
-  const [analyzing, setAnalyzing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  // Download state: one download at a time, with an optional conflict prompt.
-  const [downloading, setDownloading] = useState(false);
-  const [progress, setProgress] = useState<ProgressState>(INITIAL_PROGRESS);
-  const [downloadMessage, setDownloadMessage] = useState<string | null>(null);
-  const [downloadError, setDownloadError] = useState<string | null>(null);
-  const [conflict, setConflict] = useState<string | null>(null);
-
-  // Identifies the newest analysis so late responses cannot overwrite state.
-  const requestId = useRef(0);
-  // Set when a paste event arrives, so the URL can be analyzed immediately
-  // instead of waiting for the typing debounce.
-  const pasteRequested = useRef(false);
-  const analyzeImmediately = useRef(false);
-
-  const supported = isSupportedUrl(url);
-  const mediaType = media?.mediaType ?? null;
-  const platform = media?.platform ?? null;
-  const duration = media?.duration ?? null;
-
-  const applyUrl = (value: string, immediate: boolean) => {
-    analyzeImmediately.current = immediate;
-    // Invalidate any analysis that is still running for the old URL.
-    // Purpose: This line ensures that any ongoing analysis or operations associated with the old URL are invalidated or ignored when a new URL is entered.
-    requestId.current += 1;
-    setUrl(value);
-    setMedia(null);
-    setFormat(null);
-    setError(null);
-    setAnalyzing(false);
-    // A new URL means the previous download result no longer applies.
-    setDownloadMessage(null);
-    setDownloadError(null);
-    setConflict(null);
-    setProgress(INITIAL_PROGRESS);
-    setUrlRevision((revision) => revision + 1);
-  };
-
-  const handleUrlChange = (value: string) => {
-    const fromPaste = pasteRequested.current;
-    pasteRequested.current = false;
-    applyUrl(value, fromPaste);
-  };
-
-  const handleUrlPaste = () => {
-    // `onPaste` fires before `onChange`. Remember it so the resulting URL is
-    // analyzed without the typing debounce. If the paste did not change the
-    // value, no change event follows, so drop the flag again.
-    pasteRequested.current = true;
-    window.setTimeout(() => {
-      pasteRequested.current = false;
-    }, 300);
-  };
-
-  const handlePasteFromClipboard = async () => {
-    try {
-      const text = (await readText()).trim();
-      if (text !== "") {
-        applyUrl(text, true);
-      }
-    } catch (caught) {
-      console.error("Failed to read the clipboard:", caught);
-    }
-  };
-
-  const runAnalyze = async () => {
-    // - Purpose: Ensures that the analysis is not initiated under certain conditions:
-    // - If the URL is not supported by the application.
-    // - If an analysis is already in progress (analyzing is true).
-    // - If a download is in progress (downloading is true).
-    if (!supported || analyzing || downloading) {
-      return; // undefined
-    }
-
-    const id = ++requestId.current;
-    setAnalyzing(true);
-    setError(null);
-
-    try {
-      const info = await analyzeUrl(url.trim());
-      if (id !== requestId.current) {
-        return;
-      }
-      setMedia(info);
-    } catch (caught) {
-      if (id !== requestId.current) {
-        return;
-      }
-      setError(getErrorMessage(caught));
-    } finally {
-      if (id === requestId.current) {
-        setAnalyzing(false);
-      }
-    }
-  };
-
-  // Streaming progress from yt-dlp/FFmpeg, subscribed once for the app [].
-  useEffect(() => {
-    let unsubscribe: UnlistenFn | null = null;
-    let active = true;
-
-    onDownloadProgress((update) => {
-      setProgress({
-        percent: update.percent,
-        stage: update.stage,
-        speed: update.speed ?? null,
-        eta: update.eta ?? null,
-      });
-    })
-      .then((unlisten) => {
-        if (active) {
-          unsubscribe = unlisten; // Store the unsubscribe function for cleanup when the component unmounts.
-        } else {
-          // The component unmounted before the subscription resolved.
-          unlisten();
-        }
-      })
-      .catch((caught) => {
-        console.error("Failed to subscribe to download progress:", caught);
-      });
-    // Cleanup function: Unsubscribe from the progress events when the component unmounts.
-    return () => {
-      active = false;
-      unsubscribe?.(); // Call the unsubscribe function to stop receiving progress updates when the component unmounts.
-    };
-  }, []);
-
-  /**
-   * Starts a download. `conflict` is `fail` the first time so the backend can
-   * report an existing file; the user can then retry with `rename`.
-   */
-  const startDownload = async (conflictMode: ConflictMode) => {
-    // Guard: Ensure that the download is only initiated when all necessary conditions are met.
-    if (!media || format === null || downloading) {
-      return;
-    }
-
-    const request: DownloadRequest = {
-      url: url.trim(),
-      title: media.title,
-      id: media.id,
-      mediaType: media.mediaType,
-      format,
-      // GIF quality only matters for the GIF pipeline.
-      gifQuality: format === "gif" ? gifQuality : undefined,
-      conflict: conflictMode,
-      directory,
-    };
-    // Reset the download state before starting a new download.
-    setDownloading(true);
-    setDownloadError(null);
-    setDownloadMessage(null);
-    setConflict(null);
-    setProgress(INITIAL_PROGRESS);
-
-    try {
-      const result = await downloadMedia(request);
-      const paths = result.filePaths;
-      if (paths.length <= 1) {
-        setDownloadMessage(`Saved to ${paths[0] ?? "the chosen folder"}`);
-      } else {
-        // Show the folder once instead of listing every carousel item.
-        const first = paths[0];
-        const separator = Math.max(
-          first.lastIndexOf("/"),
-          first.lastIndexOf("\\"),
-        );
-        const folder = separator > 0 ? first.slice(0, separator) : first;
-        setDownloadMessage(`Saved ${paths.length} files to ${folder}`);
-      }
-    } catch (caught) {
-      const backend = getBackendError(caught);
-      if (backend?.code === "file-exists") {
-        // Let the user choose between cancelling and renaming.
-        setConflict(backend.message);
-      } else {
-        setDownloadError(getErrorMessage(caught));
-      }
-    } finally {
-      setDownloading(false);
-    }
-  };
-
-  const handleDirectoryChange = (next: DirectorySelection) => {
-    setDirectory((current) => ({
-      ...next, // JS spread operator: Copies all properties from the `next` object
-      path: next.mode === "custom" ? (next.path ?? current.path) : current.path, // `??` operator: If `next.path` is not null or undefined, use it; otherwise, use `current.path`.
-    }));
-  };
-
-  const handleBrowse = async () => {
-    try {
-      const selected = await open({
-        directory: true,
-        multiple: false,
-        title: "Choose download folder",
-      });
-
-      if (typeof selected === "string" && selected !== "") {
-        setDirectory({ mode: "custom", path: selected });
-      }
-    } catch (caught) {
-      // The dialog plugin only exists inside the Tauri window, so browser
-      // dev mode cannot open a native picker. Keep this out of the preview
-      // area because it says nothing about the analyzed media.
-      console.error("Failed to open the folder picker:", caught);
-    }
-  };
-
-  // Analyze a supported URL automatically after the user stops typing.
-  // Pasted URLs skip the debounce and are analyzed right away.
-  useEffect(() => {
-    // Consume the flag on every run, so a paste that is not analyzed now (for
-    // example an unsupported URL) cannot make a later manual edit instant.
-    const immediate = analyzeImmediately.current;
-    analyzeImmediately.current = false;
-
-    // Guard: Ensure that the analysis is only initiated when all necessary conditions are met.
-    if (!supported || media !== null || analyzing || error !== null) {
-      return;
-    }
-
-    const timer = window.setTimeout(() => {
-      void runAnalyze(); // Typescript: The void keyword asserts that the returned value should be treated as undefined.
-    }, immediate ? 0 : AUTO_ANALYZE_DELAY_MS);
-    // Cleanup Function: Clear the timeout if the component unmounts or if the dependencies change before the timeout completes
-    return () => window.clearTimeout(timer); // () => means it returns nothing, just clears the timer.
-  }, [url, urlRevision, supported, media, analyzing, error]); // Dependency Array: The effect will re-run whenever any of these values change.
-
-  // Keep the format valid whenever the type, duration or platform changes
-  // (GIF is limited to short videos and never offered for YouTube).
-  useEffect(() => {
-    if (mediaType === null) {
-      setFormat(null);
-      return;
-    }
-
-    const allowed = getAvailableFormats(mediaType, duration, platform);
-    setFormat((current) =>
-      current !== null && allowed.includes(current) ? current : allowed[0],
-    );
-  }, [mediaType, duration, platform]);
-
-  const hasDirectory = directory.mode === "default" || Boolean(directory.path);
+  const [tab, setTab] = useState<Tab>("yt-dlp");
 
   return (
     <main className="container">
-      <h1>yt-dlp GUI</h1>
+      <header className="app-header">
+        <h1>yt-dlp GUI</h1>
+        <nav className="tabs" role="tablist" aria-label="Application sections">
+          {TABS.map(({ id, label }) => (
+            <button
+              key={id}
+              type="button"
+              role="tab"
+              id={`tab-${id}`}
+              aria-selected={tab === id}
+              aria-controls={`panel-${id}`}
+              className={`tab-button${tab === id ? " tab-button--active" : ""}`}
+              onClick={() => setTab(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+      </header>
 
-      <div className="url-row">
-        <UrlInput
-          value={url}
-          onChange={handleUrlChange}
-          onPaste={handleUrlPaste}
-          disabled={downloading}
-        />
-        <PasteButton
-          onClick={() => {
-            void handlePasteFromClipboard();
-          }}
-          disabled={downloading}
-        />
-        <AnalyzeButton
-          onClick={() => {
-            void runAnalyze();
-          }}
-          disabled={!supported || downloading}
-          loading={analyzing}
-        />
-      </div>
+      {/* Both panels stay mounted so switching tabs keeps the current download
+          analysis and the FFmpeg detection result. */}
+      <section
+        role="tabpanel"
+        id="panel-yt-dlp"
+        aria-labelledby="tab-yt-dlp"
+        hidden={tab !== "yt-dlp"}
+      >
+        <YtDlpTab />
+      </section>
 
-      <MediaPreview media={media} loading={analyzing} error={error} />
-
-      <MediaTypeSelector
-        mediaType={mediaType}
-        duration={duration}
-        platform={platform}
-        value={format}
-        onChange={setFormat}
-        gifQuality={gifQuality}
-        onGifQualityChange={setGifQuality}
-        disabled={media === null || downloading}
-      />
-
-      <DirectoryDiv
-        value={directory}
-        onChange={handleDirectoryChange}
-        onBrowse={() => {
-          void handleBrowse();
-        }}
-        tree={media?.directoryTree ?? null}
-        disabled={media === null || downloading}
-      />
-
-      <DownloadButton
-        onClick={() => {
-          void startDownload("fail");
-        }}
-        disabled={media === null || !hasDirectory || format === null}
-        downloading={downloading}
-        progress={progress.percent}
-        stage={progress.stage}
-        speed={progress.speed}
-        eta={progress.eta}
-      />
-
-      <DownloadStatus
-        message={downloadMessage}
-        error={downloadError}
-        conflict={conflict}
-        disabled={downloading}
-        onCancelConflict={() => setConflict(null)}
-        onRenameConflict={() => {
-          void startDownload("rename");
-        }}
-      />
+      <section
+        role="tabpanel"
+        id="panel-ffmpeg"
+        aria-labelledby="tab-ffmpeg"
+        hidden={tab !== "ffmpeg"}
+      >
+        <FfmpegTab />
+      </section>
     </main>
   );
 }

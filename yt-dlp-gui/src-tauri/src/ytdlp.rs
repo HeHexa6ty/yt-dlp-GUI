@@ -102,9 +102,8 @@ fn bundled_sidecar(name: &str) -> Option<PathBuf> {
 }
 
 /// Picks the first available tool path: explicit override, bundled sidecar,
-/// then the sidecar name itself. The system tool is deliberately not used, so
-/// a missing sidecar fails loudly instead of silently running a different
-/// FFmpeg/yt-dlp from `PATH`.
+/// then the sidecar name itself. yt-dlp is still bundled, so a missing sidecar
+/// fails loudly instead of silently running a different yt-dlp from `PATH`.
 fn choose_tool_path(
     override_path: Option<PathBuf>,
     sidecar: Option<PathBuf>,
@@ -128,15 +127,44 @@ pub fn yt_dlp_path() -> PathBuf {
     resolve_tool("YT_DLP_PATH", "yt-dlp-sidecar")
 }
 
-/// Path to the FFmpeg binary: `FFMPEG_PATH` or the bundled sidecar.
+/// Path to the FFmpeg binary: `FFMPEG_PATH`, a path saved from the FFmpeg tab,
+/// or the system `ffmpeg` resolved from `PATH`.
 pub fn ffmpeg_path() -> PathBuf {
-    resolve_tool("FFMPEG_PATH", "ffmpeg-sidecar")
+    std::env::var_os("FFMPEG_PATH")
+        .map(PathBuf::from)
+        .or_else(crate::ffmpeg::saved_ffmpeg_path)
+        .unwrap_or_else(|| PathBuf::from("ffmpeg"))
 }
 
-/// Path to ffprobe: `FFPROBE_PATH` or the bundled sidecar. It is only used to
-/// fill in missing durations so the GIF length limit can still be applied.
+/// Path to ffprobe: `FFPROBE_PATH`, the `ffprobe` next to a configured
+/// `ffmpeg`, or the system `ffprobe` from `PATH`. It is only used to fill in
+/// missing durations so the GIF length limit can still be applied.
 pub fn ffprobe_path() -> PathBuf {
-    resolve_tool("FFPROBE_PATH", "ffprobe-sidecar")
+    if let Some(path) = std::env::var_os("FFPROBE_PATH") {
+        return PathBuf::from(path);
+    }
+
+    let configured = std::env::var_os("FFMPEG_PATH")
+        .map(PathBuf::from)
+        .or_else(crate::ffmpeg::saved_ffmpeg_path);
+
+    if let Some(ffmpeg) = configured
+        && (ffmpeg.is_absolute() || ffmpeg.components().count() > 1)
+    {
+        let name = if cfg!(windows) {
+            "ffprobe.exe"
+        } else {
+            "ffprobe"
+        };
+        if let Some(parent) = ffmpeg.parent() {
+            let candidate = parent.join(name);
+            if candidate.is_file() {
+                return candidate;
+            }
+        }
+    }
+
+    PathBuf::from("ffprobe")
 }
 
 /// Builds the yt-dlp command. The bundled sidecar wins over a system install;
@@ -567,15 +595,15 @@ mod tests {
         let dir = sidecar_test_dir();
         let deps = dir.join("deps");
         std::fs::create_dir_all(&deps).expect("temp deps directory should be created");
-        let sidecar = dir.join(sidecar_file_name("ffmpeg-sidecar"));
+        let sidecar = dir.join(sidecar_file_name("yt-dlp-sidecar"));
         std::fs::write(&sidecar, b"x").expect("sidecar file should be written");
 
         assert_eq!(
-            sidecar_candidate(&dir.join("app"), "ffmpeg-sidecar"),
+            sidecar_candidate(&dir.join("app"), "yt-dlp-sidecar"),
             Some(sidecar.clone())
         );
         assert_eq!(
-            sidecar_candidate(&deps.join("app-test"), "ffmpeg-sidecar"),
+            sidecar_candidate(&deps.join("app-test"), "yt-dlp-sidecar"),
             Some(sidecar)
         );
 
@@ -610,20 +638,19 @@ mod tests {
     fn finds_a_target_suffixed_sidecar_in_the_source_tree() {
         let dir = sidecar_test_dir();
         std::fs::create_dir_all(&dir).expect("temp directory should be created");
-        let sidecar = dir.join(sidecar_file_name("ffmpeg-sidecar-test-triple"));
+        let sidecar = dir.join(sidecar_file_name("yt-dlp-sidecar-test-triple"));
         std::fs::write(&sidecar, b"x").expect("sidecar file should be written");
 
-        assert_eq!(sidecar_in_dir(&dir, "ffmpeg-sidecar"), Some(sidecar));
+        assert_eq!(sidecar_in_dir(&dir, "yt-dlp-sidecar"), Some(sidecar));
 
         let _ = std::fs::remove_dir_all(&dir);
     }
 
     #[test]
-    fn bundled_sidecars_are_available_to_the_test_binary() {
+    fn the_yt_dlp_sidecar_is_available_to_the_test_binary() {
         // Development builds resolve the checked-in `src-tauri/binaries`
-        // directory, so the sidecars should always be found there.
+        // directory, so yt-dlp should always be found there. FFmpeg is a
+        // system dependency now, so it is not checked here.
         assert!(bundled_sidecar("yt-dlp-sidecar").is_some());
-        assert!(bundled_sidecar("ffmpeg-sidecar").is_some());
-        assert!(bundled_sidecar("ffprobe-sidecar").is_some());
     }
 }

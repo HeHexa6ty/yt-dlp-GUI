@@ -29,9 +29,10 @@ dist-ssr
 # Notes
 notes
 
-# yt-dlp
+# yt-dlp downloads
+yt-dlp-gui/yt-dlp.exe
 yt-dlp-gui/ffmpeg-master-latest-win64-gpl.zip
 
-# Windows ffmpeg
-yt-dlp-gui/src-tauri/binaries/ffmpeg-sidecar-x86_64-pc-windows-msvc.exe
-yt-dlp-gui/src-tauri/binaries/ffprobe-sidecar-x86_64-pc-windows-msvc.exe
+# FFmpeg is a system dependency; never commit local binaries
+yt-dlp-gui/src-tauri/binaries/ffmpeg-sidecar-*
+yt-dlp-gui/src-tauri/binaries/ffprobe-sidecar-*

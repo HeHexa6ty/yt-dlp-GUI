@@ -1,0 +1,242 @@
+.ffmpeg-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+}
+
+.ffmpeg-tab h2 {
+  margin: 0 0 8px;
+  font-size: 1.8rem;
+}
+
+.ffmpeg-intro {
+  margin: 0;
+  max-width: 720px;
+  line-height: 1.6;
+  color: #bbbbbb;
+}
+
+.ffmpeg-card {
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.ffmpeg-card h3 {
+  margin: 0 0 14px;
+  font-size: 1.1rem;
+}
+
+.ffmpeg-status-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.ffmpeg-status-summary {
+  color: #bbbbbb;
+  font-size: 0.92rem;
+}
+
+.ffmpeg-spacer {
+  flex: 1 1 auto;
+}
+
+.ffmpeg-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ffmpeg-badge--ok {
+  border-color: rgba(76, 175, 80, 0.4);
+  background: rgba(76, 175, 80, 0.16);
+  color: #8be28f;
+}
+
+.ffmpeg-badge--missing {
+  border-color: rgba(255, 152, 0, 0.4);
+  background: rgba(255, 152, 0, 0.14);
+  color: #ffc16b;
+}
+
+.ffmpeg-details {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 8px 18px;
+  margin: 18px 0 0;
+  font-size: 0.92rem;
+}
+
+.ffmpeg-details dt {
+  color: #999999;
+}
+
+.ffmpeg-details dd {
+  margin: 0;
+  color: #dddddd;
+  overflow-wrap: anywhere;
+}
+
+.ffmpeg-empty {
+  margin: 16px 0 0;
+  line-height: 1.6;
+  color: #bbbbbb;
+}
+
+.ffmpeg-version-line {
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #888888;
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  font-size: 0.78rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ffmpeg-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ffmpeg-button {
+  padding: 9px 18px;
+  border: 1px solid #555555;
+  border-radius: 8px;
+  color: #dddddd;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    opacity 0.15s;
+}
+
+.ffmpeg-button:hover:not(:disabled) {
+  border-color: #888888;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.ffmpeg-button:focus-visible {
+  outline: 2px solid #396cd8;
+  outline-offset: 2px;
+}
+
+.ffmpeg-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ffmpeg-button--primary {
+  border-color: #ffffff;
+  color: #000000;
+  background: #ffffff;
+  font-weight: 700;
+}
+
+.ffmpeg-button--primary:hover:not(:disabled) {
+  border-color: #e8e8e8;
+  background: #e8e8e8;
+}
+
+.ffmpeg-button--small {
+  padding: 7px 14px;
+  font-size: 0.85rem;
+}
+
+.ffmpeg-installers {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ffmpeg-installer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.ffmpeg-installer-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.ffmpeg-installer-label {
+  font-weight: 600;
+}
+
+.ffmpeg-installer-command {
+  color: #9fb4d8;
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+
+.ffmpeg-installer-note {
+  color: #ffc16b;
+  font-size: 0.8rem;
+}
+
+.ffmpeg-installer-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ffmpeg-hint {
+  margin: 14px 0 0;
+  color: #888888;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.ffmpeg-notice,
+.ffmpeg-error {
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 10px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.ffmpeg-notice {
+  border: 1px solid rgba(76, 175, 80, 0.35);
+  background: rgba(76, 175, 80, 0.12);
+  color: #a9e5ac;
+}
+
+.ffmpeg-error {
+  border: 1px solid rgba(229, 57, 53, 0.4);
+  background: rgba(229, 57, 53, 0.12);
+  color: #ffb0ad;
+}
+
+.ffmpeg-tab code {
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  font-size: 0.9em;
+}

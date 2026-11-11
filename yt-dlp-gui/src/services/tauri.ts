@@ -4,6 +4,7 @@ import type {
   DownloadProgress,
   DownloadRequest,
   DownloadResult,
+  FfmpegStatus,
   MediaInfo,
 } from "../types";
 
@@ -70,4 +71,24 @@ export function onDownloadProgress(
   return listen<DownloadProgress>(DOWNLOAD_PROGRESS_EVENT, (event) => {
     handler(event.payload);
   });
+}
+
+/** Asks the backend to detect FFmpeg and ffprobe and report install options. */
+export async function getFfmpegStatus(): Promise<FfmpegStatus> {
+  return invoke<FfmpegStatus>("ffmpeg_status");
+}
+
+/** Validates and saves a user-selected `ffmpeg` binary. */
+export async function setFfmpegPath(path: string): Promise<FfmpegStatus> {
+  return invoke<FfmpegStatus>("ffmpeg_set_path", { path });
+}
+
+/** Forgets the saved path and returns to automatic detection. */
+export async function clearFfmpegPath(): Promise<FfmpegStatus> {
+  return invoke<FfmpegStatus>("ffmpeg_clear_path");
+}
+
+/** Runs the selected platform package manager, then re-runs detection. */
+export async function installFfmpeg(installer: string): Promise<FfmpegStatus> {
+  return invoke<FfmpegStatus>("ffmpeg_install", { installer });
 }

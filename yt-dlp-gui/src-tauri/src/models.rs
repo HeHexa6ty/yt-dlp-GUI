@@ -134,3 +134,39 @@ pub struct DownloadResult {
     pub file_paths: Vec<String>,
     pub format: OutputFormat,
 }
+
+/// One way to install FFmpeg on the current platform.
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FfmpegInstaller {
+    /// Stable identifier used by the install command.
+    pub id: String,
+    /// Human-readable package manager name.
+    pub label: String,
+    /// Whether the package manager (and any elevation helper) is available.
+    pub available: bool,
+    /// Command the user can run manually when automatic installation fails.
+    pub command: String,
+}
+
+/// Result of looking for FFmpeg and ffprobe on the user's machine.
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FfmpegStatus {
+    /// Absolute path of the detected `ffmpeg` binary.
+    pub path: Option<String>,
+    /// Where the path came from: `environment`, `setting`, `PATH`, or `system`.
+    pub source: Option<String>,
+    /// Short version, e.g. `7.0.2`.
+    pub version: Option<String>,
+    /// Full first line printed by `ffmpeg -version`.
+    pub version_line: Option<String>,
+    /// Whether the build includes the MP3 encoder used by `--audio-format mp3`.
+    pub has_libmp3lame: bool,
+    pub ffprobe_path: Option<String>,
+    pub ffprobe_version: Option<String>,
+    /// `linux`, `windows`, or `macos`.
+    pub platform: String,
+    pub installers: Vec<FfmpegInstaller>,
+    pub download_url: String,
+}
